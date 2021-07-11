@@ -11,10 +11,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 function Todo(props){
     const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()});
-    console.log(info);
-    const [tempDes, setTempDes] = useState("");
-    const [tempCate, setTempCate] = useState("css");
-    const [tempContent, setTempContent] = useState("");
     const [selectData, setSelectData] = useState([]);
     const [data, setData] = useState([]);
     
@@ -78,6 +74,7 @@ function Todo(props){
             description: info.description,
             Category: info.category,
             content: info.content,
+            deadline: info.deadline.toLocaleDateString(),
             id: Math.floor(Math.random() * 1000),
         }
 
