@@ -17,7 +17,7 @@ function Todo(props){
     const [noteShow, setNoteShow] = useState(false);
     const [validShow, setValidShow] = useState(false);
     const [note, setNote] = useState("add/delete success");
-    
+
     useEffect(() => {
         var keys = Object.keys(localStorage);
         
@@ -30,6 +30,27 @@ function Todo(props){
             setData([...values]);
         } 
     }, [])
+
+    function dateToNum(d) {
+        d = d.split("/"); return Number(d[0]+d[1]+d[2]);
+    }
+
+    function sortByDeadLine(){
+        var tempData = [...data];
+        if(data.length > 1){
+            if(dateToNum(data[0].deadline) > dateToNum(data[1].deadline)){
+                tempData.sort(function(a,b){
+                    return dateToNum(a.deadline) - dateToNum(b.deadline)
+                });
+            }else{
+                tempData.sort(function(a,b){
+                    return dateToNum(b.deadline) - dateToNum(a.deadline)
+                });
+            }
+            setData([...tempData]);
+        }
+        
+    }
 
     function handleInfoChange(e) {
         const { name, value } = e.target;
@@ -222,6 +243,7 @@ function Todo(props){
                                 </th>
                                 <th>Description</th>
                                 <th>Category</th>
+                                <th onClick={e=>sortByDeadLine()}>Deadline</th>
                                 <th>Operate</th>
                                 </tr>
                             </thead>
@@ -242,6 +264,7 @@ function Todo(props){
                                             </th>
                                             <th onClick={e => window.location.href = "/todo/" + item.id}>{item.description}</th>
                                             <th>{item.Category}</th>
+                                            <th>{item.deadline}</th>
                                             <th style={{color: 'red'}} onClick={e=>handleDelete(item.id)}>delete</th>
                                         </tr>
                                     )
