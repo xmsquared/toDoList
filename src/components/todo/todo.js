@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import Alert from "react-bootstrap/Alert";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,6 +14,8 @@ function Todo(props){
     const [todoShow, setToDoShow] = useState(false);
     const [selectData, setSelectData] = useState([]);
     const [data, setData] = useState([]);
+    const [noteShow, setNoteShow] = useState(false);
+    const [note, setNote] = useState("add/delete success");
     
     useEffect(() => {
         var keys = Object.keys(localStorage);
@@ -87,6 +90,12 @@ function Todo(props){
 
         setInfo({description: "", category: "css", content: "", deadline: new Date()});
         setToDoShow(false);
+
+        setNote("add new success!");
+
+        setNoteShow(true, window.setTimeout(()=>{
+            setNoteShow(false)
+          },2000))
     }
 
     function handleDelete(id){
@@ -114,11 +123,20 @@ function Todo(props){
 
             setSelectData([]);
             setData(tempResult);
+
+            setNote("delete success!");
+
+            setNoteShow(true, window.setTimeout(()=>{
+                setNoteShow(false)
+              },2000))
         }
     }
 
     return(
         <div style={{marginTop: '2rem'}}>
+            <Alert variant="success" show={noteShow}>
+                {note}
+            </Alert>
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
                     {todoShow ? (
