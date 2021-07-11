@@ -1,11 +1,17 @@
 import { useState , useEffect } from "react";
+import DatePicker from "react-datepicker";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
+
+import "react-datepicker/dist/react-datepicker.css";
+
 function Todo(props){
+    const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()});
+    console.log(info);
     const [tempDes, setTempDes] = useState("");
     const [tempCate, setTempCate] = useState("css");
     const [tempContent, setTempContent] = useState("");
@@ -24,6 +30,21 @@ function Todo(props){
             setData([...values]);
         } 
     }, [])
+
+    function handleInfoChange(e) {
+        const { name, value } = e.target;
+        setInfo(prevState=>({
+            ...prevState,
+            [name]: value
+        }))
+    }
+
+    function handleDatePicker(e){
+        setInfo(prevState=>({
+            ...prevState,
+            "deadline": e
+        }))
+    }
 
     function selectAll(e){
 
@@ -54,9 +75,9 @@ function Todo(props){
     function addNew(e){
         e.preventDefault();
         var tempData = {
-            description: tempDes,
-            Category: tempCate,
-            content: tempContent,
+            description: info.description,
+            Category: info.category,
+            content: info.content,
             id: Math.floor(Math.random() * 1000),
         }
 
@@ -67,9 +88,7 @@ function Todo(props){
 
         setData([...tempResult]);
 
-        setTempDes("");
-        setTempContent("");
-        setTempCate("css");
+        setInfo({description: "", category: "css", content: "", deadline: new Date()})
     }
 
     function handleDelete(id){
@@ -108,14 +127,14 @@ function Todo(props){
                         <Form.Group  as={Row} controlId="formBasicEmail">
                             <Form.Label column sm="3">Description</Form.Label>
                             <Col sm="5">
-                                <Form.Control type="description" value={tempDes} onChange={e => setTempDes(e.target.value)} />
+                                <Form.Control type="description" name="description" value={info.description} onChange={e => handleInfoChange(e)} />
                             </Col>
                         </Form.Group>
 
                         <Form.Group  as={Row} controlId="Category">
                             <Form.Label column sm="3">Category</Form.Label>
                             <Col sm="5">
-                                <Form.Control as="select" value={tempCate} onChange={e => setTempCate(e.target.value)}>
+                                <Form.Control as="select" name="category" value={info.category} onChange={e => handleInfoChange(e)}>
                                     <option value="css">css</option>
                                     <option value="html">html</option>
                                     <option value="js">js</option>
@@ -127,7 +146,15 @@ function Todo(props){
                         <Form.Group as={Row} controlId="content">
                             <Form.Label column sm="3">Content</Form.Label>
                             <Col sm="5">
-                                <Form.Control as="textarea" rows={2} value={tempContent} onChange={e => setTempContent(e.target.value)}/>
+                                <Form.Control as="textarea" rows={2} name="content" value={info.content} onChange={e => handleInfoChange(e)}/>
+                            </Col>
+                            
+                        </Form.Group>
+
+                        <Form.Group as={Row} controlId="content">
+                            <Form.Label column sm="3">Content</Form.Label>
+                            <Col sm="5">
+                                <DatePicker selected={info.deadline} onChange={(e) => handleDatePicker(e)} />
                             </Col>
                             
                         </Form.Group>
@@ -183,7 +210,7 @@ function Todo(props){
                             }
                             </tbody>                  
                         ):(
-                            <tbody></tbody>
+                            <div></div>
                         )}
 
                     </Table>
