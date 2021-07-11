@@ -6,11 +6,11 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 
-
 import "react-datepicker/dist/react-datepicker.css";
 
 function Todo(props){
     const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()});
+    const [todoShow, setToDoShow] = useState(false);
     const [selectData, setSelectData] = useState([]);
     const [data, setData] = useState([]);
     
@@ -85,7 +85,8 @@ function Todo(props){
 
         setData([...tempResult]);
 
-        setInfo({description: "", category: "css", content: "", deadline: new Date()})
+        setInfo({description: "", category: "css", content: "", deadline: new Date()});
+        setToDoShow(false);
     }
 
     function handleDelete(id){
@@ -120,7 +121,8 @@ function Todo(props){
         <div style={{marginTop: '2rem'}}>
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
-                    <Form onSubmit={addNew}>
+                    {todoShow ? (
+                        <Form onSubmit={addNew}>
                         <Form.Group  as={Row} controlId="formBasicEmail">
                             <Form.Label column sm="3">Description</Form.Label>
                             <Col sm="5">
@@ -160,30 +162,37 @@ function Todo(props){
                             Submit
                         </Button>
                     </Form>
+                    ):(
+                        <div></div>
+                    )}
+                    
                 </Col>
 
                 <Col xs="auto">
-                    <Button style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
+                    <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(true)}>
+                        Add New
+                    </Button> {' '}
+                    <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
                         Delete selected
-                    </Button>
-
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>
-                                <label>
-                                <input
-                                    type="checkbox"
-                                    onChange={e=>selectAll(e)}
-                                />
-                                </label>
-                            </th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Operate</th>
-                            </tr>
-                        </thead>
-                        {data.length > 0?(
+                    </Button> {' '}
+                    {data.length > 0?(
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                <th>
+                                    <label>
+                                    <input
+                                        type="checkbox"
+                                        onChange={e=>selectAll(e)}
+                                    />
+                                    </label>
+                                </th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Operate</th>
+                                </tr>
+                            </thead>
+                    
                             <tbody>
                             {
                                 data.map((item, index)=> {
@@ -206,11 +215,10 @@ function Todo(props){
                                 })
                             }
                             </tbody>                  
-                        ):(
-                            <div></div>
-                        )}
-
-                    </Table>
+                        </Table>
+                    ):(
+                        <div></div>
+                    )}
                 </Col>
             </Row>
         </div>
