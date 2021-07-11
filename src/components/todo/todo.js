@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import Alert from "react-bootstrap/Alert";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -13,6 +14,9 @@ function Todo(props){
     const [todoShow, setToDoShow] = useState(false);
     const [selectData, setSelectData] = useState([]);
     const [data, setData] = useState([]);
+    const [noteShow, setNoteShow] = useState(false);
+    const [validShow, setValidShow] = useState(false);
+    const [note, setNote] = useState("add/delete success");
     
     useEffect(() => {
         var keys = Object.keys(localStorage);
@@ -70,23 +74,36 @@ function Todo(props){
 
     function addNew(e){
         e.preventDefault();
-        var tempData = {
-            description: info.description,
-            Category: info.category,
-            content: info.content,
-            deadline: info.deadline.toLocaleDateString(),
-            id: Math.floor(Math.random() * 1000),
+        if(info.description === ""){
+            setValidShow(true,  window.setTimeout(()=>{
+                setValidShow(false)
+              },2000));
+        } else {
+            var tempData = {
+                description: info.description,
+                Category: info.category,
+                content: info.content,
+                deadline: info.deadline.toLocaleDateString(),
+                id: Math.floor(Math.random() * 1000),
+            }
+    
+            localStorage.setItem(tempData.id, JSON.stringify(tempData));
+    
+            var tempResult = [...data];
+            tempResult.push(tempData);
+    
+            setData([...tempResult]);
+    
+            setInfo({description: "", category: "css", content: "", deadline: new Date()});
+            setToDoShow(false);
+    
+            setNote("add new success!");
+    
+            setNoteShow(true, window.setTimeout(()=>{
+                setNoteShow(false)
+              },2000))
         }
 
-        localStorage.setItem(tempData.id, JSON.stringify(tempData));
-
-        var tempResult = [...data];
-        tempResult.push(tempData);
-
-        setData([...tempResult]);
-
-        setInfo({description: "", category: "css", content: "", deadline: new Date()});
-        setToDoShow(false);
     }
 
     function handleDelete(id){
@@ -97,6 +114,11 @@ function Todo(props){
         })
 
         setData([...tempResult]);
+        setNote("delete success!");
+
+        setNoteShow(true, window.setTimeout(()=>{
+            setNoteShow(false)
+          },2000))
     }
 
     function deleteSelect(e){
@@ -114,11 +136,20 @@ function Todo(props){
 
             setSelectData([]);
             setData(tempResult);
+
+            setNote("delete success!");
+
+            setNoteShow(true, window.setTimeout(()=>{
+                setNoteShow(false)
+              },2000))
         }
     }
 
     return(
         <div style={{marginTop: '2rem'}}>
+            <Alert variant="success" show={noteShow}>
+                {note}
+            </Alert>
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
                     {todoShow ? (
@@ -129,7 +160,9 @@ function Todo(props){
                                 <Form.Control type="description" name="description" value={info.description} onChange={e => handleInfoChange(e)} />
                             </Col>
                         </Form.Group>
-
+                        <Alert variant="danger" show={validShow}>
+                            Please fill in description
+                        </Alert>
                         <Form.Group  as={Row} controlId="Category">
                             <Form.Label column sm="3">Category</Form.Label>
                             <Col sm="5">
@@ -169,7 +202,7 @@ function Todo(props){
                 </Col>
 
                 <Col xs="auto">
-                    <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(true)}>
+                    <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
                         Add New
                     </Button> {' '}
                     <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
