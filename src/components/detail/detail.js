@@ -9,6 +9,7 @@ function Detail(props){
             <p><strong>Description: </strong> {data.description}</p>
             <p><strong>Category: </strong> {data.Category}</p>
             <p><strong>content: </strong> {data.content}</p>
+            <p><strong>deadline: </strong> {data.deadline}</p>
         </div>
     )
 }
