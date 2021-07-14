@@ -4,11 +4,11 @@ import React from 'react';
 import './App.css';
 
 import NavHeader from './components/header/nav-header';
-import About from './components/about/about.js';
-import Todo from './components/todo/todo.js';
-import Detail from './components/detail/detail.js';
+import About from './components/about/about';
+import Todo from './components/todo/todo';
+import Detail from './components/detail/detail';
 
-function App() {
+const App: React.FC = () => {
 
   return (
     <div className="App">

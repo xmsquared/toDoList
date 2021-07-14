@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 
-function Detail(props){
+const Detail: React.FC = () => {
+
     let {id} = useParams();
     const data = JSON.parse(localStorage.getItem(id));
 

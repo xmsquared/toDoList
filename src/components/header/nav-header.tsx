@@ -1,7 +1,7 @@
 import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
-function NavHeader(props){
+const NavHeader: React.FC = () => {
     return(
         <Navbar bg="info" expand="md" variant="dark">
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
