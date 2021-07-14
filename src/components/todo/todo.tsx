@@ -6,8 +6,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
-
 import "react-datepicker/dist/react-datepicker.css";
+
+declare function require(name:string);
+var I18n = require('react-redux-i18n').I18n;
+
+
 
 const Todo: React.FC = () =>{
     const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()});
@@ -116,14 +120,13 @@ const Todo: React.FC = () =>{
             setInfo({description: "", category: "css", content: "", deadline: new Date()});
             setToDoShow(false);
     
-            setNote("add new success!");
+            setNote(I18n.t('alertAdd'));
 
             setNoteShow(true);
         }
     }
 
     useEffect(() => {
-        console.log("this happens");
         if(noteShow){
             window.setTimeout(()=>{setNoteShow(false)},2000)
         }
@@ -140,7 +143,7 @@ const Todo: React.FC = () =>{
         })
 
         setData([...tempResult]);
-        setNote("delete success!");
+        setNote(I18n.t('alertRemove'));
 
         setNoteShow(true);
     }
@@ -160,8 +163,8 @@ const Todo: React.FC = () =>{
 
             setSelectData([]);
             setData(tempResult);
-
-            setNote("delete success!");
+            
+            setNote(I18n.t('alertRemove'));
 
             setNoteShow(true)
         }
@@ -177,16 +180,16 @@ const Todo: React.FC = () =>{
                     {todoShow &&
                         <Form onSubmit={addNew}>
                         <Form.Group  as={Row} controlId="formBasicEmail">
-                            <Form.Label column sm="3">Description</Form.Label>
+                            <Form.Label column sm="3">{I18n.t('description')}</Form.Label>
                             <Col sm="5">
                                 <Form.Control type="description" name="description" value={info.description} onChange={e => handleInfoChange(e)} />
                             </Col>
                         </Form.Group>
                         <Alert variant="danger" show={validShow}>
-                            Please fill in description
+                            {I18n.t('alertValid')}
                         </Alert>
                         <Form.Group  as={Row} controlId="Category">
-                            <Form.Label column sm="3">Category</Form.Label>
+                            <Form.Label column sm="3">{I18n.t('category')}</Form.Label>
                             <Col sm="5">
                                 <Form.Control as="select" name="category" value={info.category} onChange={e => handleInfoChange(e)}>
                                     <option value="css">css</option>
@@ -198,7 +201,7 @@ const Todo: React.FC = () =>{
                         </Form.Group>
 
                         <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">Content</Form.Label>
+                            <Form.Label column sm="3">{I18n.t('content')}</Form.Label>
                             <Col sm="5">
                                 <Form.Control as="textarea" rows={2} name="content" value={info.content} onChange={e => handleInfoChange(e)}/>
                             </Col>
@@ -206,7 +209,7 @@ const Todo: React.FC = () =>{
                         </Form.Group>
 
                         <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">Content</Form.Label>
+                            <Form.Label column sm="3">{I18n.t('deadline')}</Form.Label>
                             <Col sm="5">
                                 <DatePicker selected={info.deadline} onChange={(e) => handleDatePicker(e)} />
                             </Col>
@@ -214,7 +217,7 @@ const Todo: React.FC = () =>{
                         </Form.Group>
 
                         <Button variant="primary" type="submit">
-                            Submit
+                            {I18n.t('submit')}
                         </Button>
                     </Form>
                     }
@@ -223,10 +226,10 @@ const Todo: React.FC = () =>{
 
                 <Col xs="auto">
                     <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
-                        Add New
+                        {I18n.t('addNew')}
                     </Button> {' '}
                     <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
-                        Delete selected
+                        {I18n.t('delete')}
                     </Button> {' '}
                     {data.length > 0 && 
                         <Table striped bordered hover>
@@ -240,10 +243,10 @@ const Todo: React.FC = () =>{
                                     />
                                     </label>
                                 </th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th onClick={e=>sortByDeadLine()}>Deadline</th>
-                                <th>Operate</th>
+                                <th>{I18n.t('description')}</th>
+                                <th>{I18n.t('category')}</th>
+                                <th onClick={e=>sortByDeadLine()}>{I18n.t('deadline')}</th>
+                                <th>{I18n.t('operate')}</th>
                                 </tr>
                             </thead>
                     
@@ -264,7 +267,7 @@ const Todo: React.FC = () =>{
                                             <th onClick={e => window.location.href = "/todo/" + item.id}>{item.description}</th>
                                             <th>{item.Category}</th>
                                             <th>{item.deadline}</th>
-                                            <th style={{color: 'red'}} onClick={e=>handleDelete(item.id)}>delete</th>
+                                            <th style={{color: 'red'}} onClick={e=>handleDelete(item.id)}>{I18n.t('delete')}</th>
                                         </tr>
                                     )
                                 })

@@ -5,10 +5,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import { loadTranslations, setLocale, syncTranslationWithStore } from 'react-redux-i18n';
+import { Provider } from 'react-redux';
+import translation from "./i18n/translation";
+import store from './i18n/store';
+
+syncTranslationWithStore(store)
+store.dispatch(loadTranslations(translation));
+store.dispatch(setLocale('zh'));
+
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
