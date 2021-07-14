@@ -173,7 +173,7 @@ function Todo(props){
             </Alert>
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
-                    {todoShow ? (
+                    {todoShow &&
                         <Form onSubmit={addNew}>
                         <Form.Group  as={Row} controlId="formBasicEmail">
                             <Form.Label column sm="3">Description</Form.Label>
@@ -216,9 +216,7 @@ function Todo(props){
                             Submit
                         </Button>
                     </Form>
-                    ):(
-                        <div></div>
-                    )}
+                    }
                     
                 </Col>
 
@@ -229,7 +227,7 @@ function Todo(props){
                     <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
                         Delete selected
                     </Button> {' '}
-                    {data.length > 0?(
+                    {data.length > 0 && 
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
@@ -272,9 +270,7 @@ function Todo(props){
                             }
                             </tbody>                  
                         </Table>
-                    ):(
-                        <div></div>
-                    )}
+                    }
                 </Col>
             </Row>
         </div>
