@@ -2,6 +2,7 @@ import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Translate } from 'react-redux-i18n';
+import { connect } from 'react-redux';
 
 const NavHeader: React.FC = () => {
     const languages = [
@@ -29,7 +30,7 @@ const NavHeader: React.FC = () => {
                         {                               
                             languages.map((item, index)=> {
                                 return(
-                                    <NavDropdown.Item key={index}>{item.name}</NavDropdown.Item>
+                                    <NavDropdown.Item key={index} onClick={()=>this.props.dispatch(setLocale('en'))}>{item.name}</NavDropdown.Item>
                                 )
                             })
                         }
@@ -41,4 +42,4 @@ const NavHeader: React.FC = () => {
     )
 }
 
-export default NavHeader;
+export default connect()(NavHeader)
