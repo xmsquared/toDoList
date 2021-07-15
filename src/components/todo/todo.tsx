@@ -29,7 +29,7 @@ const Todo: React.FC = () =>{
         if(keys.length > 0){
             var i = keys.length;
             while ( i-- ) {
-                values.push(JSON.parse(localStorage.getItem(keys[i])));
+                values.push(JSON.parse(localStorage.getItem(keys[i]) ?? '') ?? '');
             }
             setData([...values]);
         } 

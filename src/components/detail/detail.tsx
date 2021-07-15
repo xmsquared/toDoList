@@ -1,9 +1,13 @@
 import { useParams } from "react-router-dom";
 
+export interface ParamsType {
+    id: string;
+}
+
 const Detail: React.FC = () => {
 
-    let {id} = useParams();
-    const data = JSON.parse(localStorage.getItem(id));
+    let {id} = useParams<ParamsType>();
+    const data = JSON.parse(localStorage.getItem(id) ?? '');
 
     return(
         <div style={{textAlign: 'left', padding: '5% 10%'}}>
