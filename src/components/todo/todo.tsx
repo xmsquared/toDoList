@@ -14,22 +14,23 @@ var I18n = require('react-redux-i18n').I18n;
 
 
 const Todo: React.FC = () =>{
-    const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()});
-    const [todoShow, setToDoShow] = useState(false);
-    const [selectData, setSelectData] = useState([]);
-    const [data, setData] = useState([]);
+    const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()}) as any;
+    const [selectData, setSelectData] = useState([]) as any;
+    const [data, setData] = useState([]) as any;
     const [noteShow, setNoteShow] = useState(false);
     const [validShow, setValidShow] = useState(false);
     const [note, setNote] = useState("add/delete success");
+    const [todoShow, setToDoShow] = useState(false);
 
     useEffect(() => {
         var keys = Object.keys(localStorage);
         
-        var values = [];
+        const values = [] as any;
         if(keys.length > 0){
             var i = keys.length;
             while ( i-- ) {
-                values.push(JSON.parse(localStorage.getItem(keys[i]) ?? '') ?? '');
+                var temp_data = JSON.parse(localStorage.getItem(keys[i]) ?? '');
+                values.push(temp_data);
             }
             setData([...values]);
         } 

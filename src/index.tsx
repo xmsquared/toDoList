@@ -12,7 +12,7 @@ import store from './i18n/store';
 
 syncTranslationWithStore(store)
 store.dispatch(loadTranslations(translation));
-store.dispatch(setLocale('zh'));
+store.dispatch(setLocale('en'));
 
 
 ReactDOM.render(
