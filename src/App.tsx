@@ -4,9 +4,9 @@ import React from 'react';
 import './App.css';
 
 import NavHeader from './components/header/nav-header';
-import About from './components/about/about';
-import Todo from './components/todo/todo';
-import Detail from './components/detail/detail';
+import About from './pages/about/about';
+import Todo from './pages/todo/todo';
+import Detail from './pages/detail/detail';
 
 const App: React.FC = () => {
 

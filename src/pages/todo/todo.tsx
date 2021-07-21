@@ -8,13 +8,20 @@ import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
 import "react-datepicker/dist/react-datepicker.css";
 
+import {TodoForm} from "../../components/todoForm/todoForm";
+
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
-
-
 const Todo: React.FC = () =>{
-    const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()}) as any;
+    interface info_obj{
+        description: string,
+        category: string,
+        content: string,
+        deadline: Date,
+    }
+
+    const [info, setInfo] = useState<info_obj>({description: "", category: "css", content: "", deadline: new Date()});
     const [selectData, setSelectData] = useState([]) as any;
     const [data, setData] = useState([]) as any;
     const [noteShow, setNoteShow] = useState(false);
@@ -179,48 +186,16 @@ const Todo: React.FC = () =>{
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
                     {todoShow &&
-                        <Form onSubmit={addNew}>
-                        <Form.Group  as={Row} controlId="formBasicEmail">
-                            <Form.Label column sm="3">{I18n.t('description')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control type="description" name="description" value={info.description} onChange={e => handleInfoChange(e)} />
-                            </Col>
-                        </Form.Group>
-                        <Alert variant="danger" show={validShow}>
-                            {I18n.t('alertValid')}
-                        </Alert>
-                        <Form.Group  as={Row} controlId="Category">
-                            <Form.Label column sm="3">{I18n.t('category')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control as="select" name="category" value={info.category} onChange={e => handleInfoChange(e)}>
-                                    <option value="css">css</option>
-                                    <option value="html">html</option>
-                                    <option value="js">js</option>
-                                </Form.Control>
-                            </Col>
-
-                        </Form.Group>
-
-                        <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">{I18n.t('content')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control as="textarea" rows={2} name="content" value={info.content} onChange={e => handleInfoChange(e)}/>
-                            </Col>
-                            
-                        </Form.Group>
-
-                        <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">{I18n.t('deadline')}</Form.Label>
-                            <Col sm="5">
-                                <DatePicker selected={info.deadline} onChange={(e) => handleDatePicker(e)} />
-                            </Col>
-                            
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            {I18n.t('submit')}
-                        </Button>
-                    </Form>
+                        <TodoForm  
+                            handleInfoChange = {handleInfoChange}
+                            addNew = {addNew}
+                            handleDatePicker = {handleDatePicker}
+                            validShow = {validShow}
+                            description = {info.description}
+                            category = {info.category} 
+                            content = {info.content}
+                            deadline = {info.deadline}
+                        />
                     }
                     
                 </Col>
