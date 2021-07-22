@@ -1,20 +1,20 @@
 import { useState , useEffect } from "react";
-import DatePicker from "react-datepicker";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
 import Alert from "react-bootstrap/Alert";
 import "react-datepicker/dist/react-datepicker.css";
+
+import { TodoForm } from "../../components/todoForm/todoForm";
+import { info_obj } from "../../interface/todoInterface";
+import { TodoTable } from "../../components/todoTable/todoTable";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
-
-
 const Todo: React.FC = () =>{
-    const [info, setInfo] = useState({description: "", category: "css", content: "", deadline: new Date()}) as any;
+
+    const [info, setInfo] = useState<info_obj>({description: "", category: "css", content: "", deadline: new Date(), id: Math.floor(Math.random() * 1000)});
     const [selectData, setSelectData] = useState([]) as any;
     const [data, setData] = useState([]) as any;
     const [noteShow, setNoteShow] = useState(false);
@@ -105,10 +105,10 @@ const Todo: React.FC = () =>{
         } else {
             var tempData = {
                 description: info.description,
-                Category: info.category,
+                category: info.category,
                 content: info.content,
                 deadline: info.deadline.toLocaleDateString(),
-                id: Math.floor(Math.random() * 1000),
+                id: info.id,
             }
     
             localStorage.setItem(String(tempData.id), JSON.stringify(tempData));
@@ -118,7 +118,7 @@ const Todo: React.FC = () =>{
     
             setData([...tempResult]);
     
-            setInfo({description: "", category: "css", content: "", deadline: new Date()});
+            setInfo({description: "", category: "css", content: "", deadline: new Date(), id: Math.floor(Math.random() * 1000)});
             setToDoShow(false);
     
             setNote(I18n.t('alertAdd'));
@@ -179,50 +179,17 @@ const Todo: React.FC = () =>{
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
                     {todoShow &&
-                        <Form onSubmit={addNew}>
-                        <Form.Group  as={Row} controlId="formBasicEmail">
-                            <Form.Label column sm="3">{I18n.t('description')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control type="description" name="description" value={info.description} onChange={e => handleInfoChange(e)} />
-                            </Col>
-                        </Form.Group>
-                        <Alert variant="danger" show={validShow}>
-                            {I18n.t('alertValid')}
-                        </Alert>
-                        <Form.Group  as={Row} controlId="Category">
-                            <Form.Label column sm="3">{I18n.t('category')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control as="select" name="category" value={info.category} onChange={e => handleInfoChange(e)}>
-                                    <option value="css">css</option>
-                                    <option value="html">html</option>
-                                    <option value="js">js</option>
-                                </Form.Control>
-                            </Col>
-
-                        </Form.Group>
-
-                        <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">{I18n.t('content')}</Form.Label>
-                            <Col sm="5">
-                                <Form.Control as="textarea" rows={2} name="content" value={info.content} onChange={e => handleInfoChange(e)}/>
-                            </Col>
-                            
-                        </Form.Group>
-
-                        <Form.Group as={Row} controlId="content">
-                            <Form.Label column sm="3">{I18n.t('deadline')}</Form.Label>
-                            <Col sm="5">
-                                <DatePicker selected={info.deadline} onChange={(e) => handleDatePicker(e)} />
-                            </Col>
-                            
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            {I18n.t('submit')}
-                        </Button>
-                    </Form>
+                        <TodoForm  
+                            handleInfoChange = {handleInfoChange}
+                            addNew = {addNew}
+                            handleDatePicker = {handleDatePicker}
+                            validShow = {validShow}
+                            description = {info.description}
+                            category = {info.category} 
+                            content = {info.content}
+                            deadline = {info.deadline}
+                        />
                     }
-                    
                 </Col>
 
                 <Col xs="auto">
@@ -233,48 +200,14 @@ const Todo: React.FC = () =>{
                         {I18n.t('delete')}
                     </Button> {' '}
                     {data.length > 0 && 
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                <th>
-                                    <label>
-                                    <input
-                                        type="checkbox"
-                                        onChange={e=>selectAll(e)}
-                                    />
-                                    </label>
-                                </th>
-                                <th>{I18n.t('description')}</th>
-                                <th>{I18n.t('category')}</th>
-                                <th onClick={e=>sortByDeadLine()}>{I18n.t('deadline')}</th>
-                                <th>{I18n.t('operate')}</th>
-                                </tr>
-                            </thead>
-                    
-                            <tbody>
-                            {
-                                data.map((item, index)=> {
-                                    return(
-                                        <tr key={index}>
-                                            <th>
-                                                <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked = {selectData.includes(item.id)}
-                                                    onChange = {e => selectOne(e, item.id)}
-                                                />
-                                                </label>
-                                            </th>
-                                            <th onClick={e => window.location.href = "/todo/" + item.id}>{item.description}</th>
-                                            <th>{item.Category}</th>
-                                            <th>{item.deadline}</th>
-                                            <th style={{color: 'red'}} onClick={e=>handleDelete(item.id)}>{I18n.t('delete')}</th>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            </tbody>                  
-                        </Table>
+                        <TodoTable
+                            selectAll = { selectAll }
+                            selectOne = { selectOne }
+                            sortByDeadLine = { sortByDeadLine }
+                            data = { data }
+                            selectData = { selectData }
+                            handleDelete = { handleDelete }
+                        />
                     }
                 </Col>
             </Row>
