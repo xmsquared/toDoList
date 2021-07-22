@@ -2,25 +2,28 @@ import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Translate } from 'react-redux-i18n';
-import { connect } from 'react-redux';
-import store from '../../i18n/store';
-import { setLocale } from 'react-redux-i18n';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const NavHeader: React.FC = () => {
-    const languages = [
-        {
-          code: 'en',
-          name: 'english(US)',
-        },
-        {
-          code: 'zh',
-          name: '汉语',
-        },
-    ]
+library.add(faUser)
 
-    const switchLocale = (code: string) => {
-        store.dispatch(setLocale(code))
-    }
+interface Iprops{
+    switchLocale: (code: string) => void
+}
+
+const languages = [
+    {
+      code: 'en',
+      name: 'english(US)',
+    },
+    {
+      code: 'zh',
+      name: '汉语',
+    },
+]
+
+const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
 
     return(
         <Navbar bg="info" expand="md" variant="dark">
@@ -33,6 +36,12 @@ const NavHeader: React.FC = () => {
                     <Nav.Item>
                     <Nav.Link href="/about"><Translate value="about"/></Nav.Link>
                     </Nav.Item>
+                </Nav>
+                <Nav className="ml-auto">
+                    <NavDropdown title={<FontAwesomeIcon icon={faUser} />} id="basic-nav-dropdown">
+                       <NavDropdown.Item href="/todo">Todo List</NavDropdown.Item>
+                       <NavDropdown.Item href="/todo">Log Out</NavDropdown.Item>
+                    </NavDropdown>
                     <NavDropdown title={<Translate value="language"/>} id="basic-nav-dropdown">
                         {                               
                             languages.map((item, index)=> {
@@ -49,4 +58,4 @@ const NavHeader: React.FC = () => {
     )
 }
 
-export default connect()(NavHeader)
+export default NavHeader
