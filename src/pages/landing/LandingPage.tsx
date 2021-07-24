@@ -1,14 +1,31 @@
 import React from "react";
-import { RegisterModal } from "../../components/user/registerModal";
+import { useState, useEffect } from "react";
+
+import { useTokenContext } from '../../App';
+
 import { LoginModal } from "../../components/user/loginModal";
 import { ProfileModal } from "../../components/user/profileModal";
 
 export const LandingPage: React.FC = () => {
+    const {token} = useTokenContext();
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(()=>{
+        if(token !== ''){
+            setLoggedIn(true)
+        }
+    }, [token])
+
     return(
         <React.Fragment>
-            <RegisterModal />
-            <LoginModal />
-            <ProfileModal />
+            {loggedIn ? (
+                <ProfileModal />
+            ):(
+                <LoginModal />
+            )}
+           
+            
+            
         </React.Fragment>
     )
 }
