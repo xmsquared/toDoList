@@ -17,8 +17,8 @@ var I18n = require('react-redux-i18n').I18n;
 export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
   const [userInfo, setUserInfo] = useState<User>(DefaultUser);
-  const [updateSuccess, setUpdateSuccess] = useState(true);
-  
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+
   useEffect(()=>{
     const tempToken = JSON.parse(token);
     getUserDetailByToken(tempToken)
