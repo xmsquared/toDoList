@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 
 import { User , DefaultUser} from '../../interface/userInterface';
 import { updateProfile, getUserDetailByToken } from '../../utils/user/TodoApiService';
@@ -18,7 +19,9 @@ export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
   const [userInfo, setUserInfo] = useState<User>(DefaultUser);
   const [updateSuccess, setUpdateSuccess] = useState(false);
-
+  const [updateFailure, setUpdateFailure] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  
   useEffect(()=>{
     const tempToken = JSON.parse(token);
     getUserDetailByToken(tempToken)
@@ -31,7 +34,11 @@ export const ProfileModal: React.FC = () =>{
     if(updateSuccess){
       window.setTimeout(()=>{setUpdateSuccess(false)},3000);
     }
-  }, [updateSuccess])
+
+    if(updateFailure){
+      window.setTimeout(()=>{setUpdateFailure(false)},3000);
+    }
+  }, [updateSuccess, updateFailure])
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -44,11 +51,16 @@ export const ProfileModal: React.FC = () =>{
   const updateInfo = (e) => {
     e.preventDefault();
     console.log(userInfo);
+    setUpdateLoading(true);
     const tempToken = JSON.parse(token);
     updateProfile(userInfo, tempToken)
     .then(res => {
       if (res){
         setUpdateSuccess(true);
+        setUpdateLoading(false);
+      }else{
+        setUpdateFailure(true);
+        setUpdateLoading(false);
       }
     });
   }
@@ -83,10 +95,28 @@ export const ProfileModal: React.FC = () =>{
           </Form.Group>
           
           <Row>
-          <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
+            {updateLoading?(
+              <Button block variant="dark" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+                Loading...
+              </Button>
+              
+            ):(
+              <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
+            )}
+          
           </Row>
           <Alert variant="success" show={updateSuccess}>
             update detail success!
+          </Alert>
+          <Alert variant="danger" show={updateFailure}>
+            Unable to update your details, please try it later
           </Alert>
 
         </Form>

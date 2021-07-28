@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 
 import { User , DefaultUser } from '../../interface/userInterface';
 import { registerUser } from '../../utils/user/TodoApiService';
@@ -14,9 +15,9 @@ declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const RegisterModal: React.FC = () =>{
-  const [tempuser, setTempUser] = useState<User>(DefaultUser);
-  
   const {setToken} = useTokenContext();
+  const [tempuser, setTempUser] = useState<User>(DefaultUser);
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -29,10 +30,18 @@ export const RegisterModal: React.FC = () =>{
   const register = (e) => {
     e.preventDefault();
     console.log(tempuser);
+    setRegisterLoading(true);
+    
     registerUser(tempuser)
     .then(res => {
-      setToken(res.token);
-      localStorage.setItem('token', JSON.stringify(res.token));
+      if(res.status){
+        setToken(res.token);
+        localStorage.setItem('token', JSON.stringify(res.token));
+        setRegisterLoading(false);
+      } else {
+        setRegisterLoading(false);
+      }
+
     })
     .catch(res => console.log(res));
   }
@@ -67,7 +76,21 @@ export const RegisterModal: React.FC = () =>{
           </Form.Group>
           
           <Row>
-          <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
+            {registerLoading? (
+              <Button block variant="dark" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+                Loading...
+              </Button>
+            ):(
+              <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
+            )}
+
           </Row>
 
         </Form>
