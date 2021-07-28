@@ -6,19 +6,19 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
-import { User } from '../../interface/userInterface';
+import { User , DefaultUser } from '../../interface/userInterface';
 import { registerUser } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { useTokenContext } from '../../context';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const RegisterModal: React.FC = () =>{
-  const [tempuser, setTempUser] = useState<User>({name: '', email: '', password: '', age: 0});
+  const [tempuser, setTempUser] = useState<User>(DefaultUser);
   
   const {setToken} = useTokenContext();
 
-  function onChangeInfo(e){
+  const onChangeInfo = (e) => {
     const { name, value } = e.target;
     setTempUser(prevState=>({
         ...prevState,
@@ -26,7 +26,7 @@ export const RegisterModal: React.FC = () =>{
     }))
   }
 
-  function regist(e) {
+  const register = (e) => {
     e.preventDefault();
     console.log(tempuser);
     registerUser(tempuser)
@@ -40,7 +40,7 @@ export const RegisterModal: React.FC = () =>{
   return(
       <Container fluid>
       <Col>
-        <Form onSubmit={regist}>
+        <Form onSubmit={register}>
           <h4>{ I18n.t('registerUser') }</h4>
 
           <Form.Group controlId="registUsername">

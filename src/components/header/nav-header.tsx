@@ -8,11 +8,11 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { loggout } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { useTokenContext } from '../../context';
 
 library.add(faUser)
 
-interface Iprops{
+interface IProps{
     switchLocale: (code: string) => void
 }
 
@@ -27,7 +27,7 @@ const languages = [
     },
 ]
 
-const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
+const NavHeader: React.FC<IProps> = ({switchLocale}) => {
     const [login, setLogin] = useState(false);
     const {token} = useTokenContext();
 
@@ -37,7 +37,7 @@ const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
         }
     }
 
-    function handleloggout(){
+    const handleloggout = () => {
         if(token !== ''){
             const tempToken = JSON.parse(token);
             console.log(tempToken)

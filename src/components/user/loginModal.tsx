@@ -7,15 +7,15 @@ import Col from "react-bootstrap/Col";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
-import { useTokenContext } from '../../App';
-import { Login } from '../../interface/userInterface';
+import { Login , DefaultLogin} from '../../interface/';
 import { loginUserByEmail } from '../../utils/user/TodoApiService';
+import { useTokenContext } from "../../context";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const LoginModal: React.FC = () =>{
-  const [detail, setDetail] = useState<Login>({email:'', password: ''});
+  const [detail, setDetail] = useState<Login>(DefaultLogin);
   const [alertDetail, setAlertDetail] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const { setToken} = useTokenContext();
@@ -56,7 +56,7 @@ export const LoginModal: React.FC = () =>{
       }
     })
     
-    setDetail({email:'', password: ''});
+    setDetail(DefaultLogin);
   }
 
   return(

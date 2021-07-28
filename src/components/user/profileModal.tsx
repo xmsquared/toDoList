@@ -7,16 +7,16 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
-import { User } from '../../interface/userInterface';
+import { User , DefaultUser} from '../../interface/userInterface';
 import { updateProfile, getUserDetailByToken } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { useTokenContext } from '../../context';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
-  const [userInfo, setUserInfo] = useState<User>({name: '', email: '', password: '', age: 0});
+  const [userInfo, setUserInfo] = useState<User>(DefaultUser);
   const [updateSuccess, setUpdateSuccess] = useState(true);
   
   useEffect(()=>{
@@ -33,7 +33,7 @@ export const ProfileModal: React.FC = () =>{
     }
   }, [updateSuccess])
 
-  function onChangeInfo(e){
+  const onChangeInfo = (e) => {
     const { name, value } = e.target;
     setUserInfo(prevState=>({
         ...prevState,
@@ -41,7 +41,7 @@ export const ProfileModal: React.FC = () =>{
     }))
   }
 
-  function updateInfo(e){
+  const updateInfo = (e) => {
     e.preventDefault();
     console.log(userInfo);
     const tempToken = JSON.parse(token);
