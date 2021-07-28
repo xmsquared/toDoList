@@ -1,5 +1,5 @@
 import Table from 'react-bootstrap/Table';
-import { info_obj } from "../../interface/todoInterface";
+import { InfoObj } from "../../interface/todoInterface";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -8,9 +8,9 @@ interface IProps{
     selectAll: (e: any)=>void,
     selectOne: (e: any, id: any)=>void,
     sortByDeadLine: ()=>void,
-    data: info_obj[],
-    selectData: number[],
-    handleDelete: (id: any)=>void
+    data: InfoObj[],
+    selectData: string[],
+    deleteOne: (id: any)=>void
 }
 
 export const TodoTable: React.FC<IProps> = ({
@@ -19,7 +19,7 @@ export const TodoTable: React.FC<IProps> = ({
     sortByDeadLine,
     data,
     selectData,
-    handleDelete
+    deleteOne
 }) => {
     return (
         <Table striped bordered hover>
@@ -56,8 +56,8 @@ export const TodoTable: React.FC<IProps> = ({
                             </th>
                             <th onClick={e => window.location.href = "/todo/" + item.id}>{item.description}</th>
                             <th>{item.category}</th>
-                            <th>{item.deadline}</th>
-                            <th style={{color: 'red'}} onClick={e=>handleDelete(item.id)}>{I18n.t('delete')}</th>
+                            <th>{item.deadline.toLocaleDateString()}</th>
+                            <th style={{color: 'red'}} onClick={e => deleteOne(item.id)}>{I18n.t('delete')}</th>
                         </tr>
                     )
                 })
