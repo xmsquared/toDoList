@@ -11,7 +11,7 @@ export interface Login{
 }
 
 
-export interface User_context{
+export interface userContext{
     token: string,
-    setToken: (e: any) => void,
+    setToken: (e: string) => void,
 }

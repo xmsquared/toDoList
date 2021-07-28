@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import React from 'react';
-import { useState, createContext, useContext } from "react";
+import React, { useState } from 'react';
 import './App.css';
 
 import NavHeader from './components/header/nav-header';
@@ -9,21 +8,10 @@ import Todo from './pages/todo/todo';
 import Detail from './pages/detail/detail';
 import { LandingPage } from "./pages/landing/LandingPage";
 import { RegisterPage } from "./pages/register/register";
-
-import { User_context } from './interface/userInterface';
+import { TokenContext } from './context/';
 
 import store from './i18n/store';
 import { setLocale } from 'react-redux-i18n';
-
-export const TokenContext = createContext<User_context>(
-  {
-    token: '',
-    setToken: () => {},
-
-  }
-);
-
-export const useTokenContext = () => useContext(TokenContext);
 
 export const App: React.FC = () => {
 

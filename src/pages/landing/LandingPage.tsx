@@ -1,10 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import { useTokenContext } from '../../App';
+import { useTokenContext } from '../../context/';
 
-import { LoginModal } from "../../components/user/loginModal";
-import { ProfileModal } from "../../components/user/profileModal";
+import { LoginModal } from "../../components/user/";
+import { ProfileModal } from "../../components/user/";
 
 export const LandingPage: React.FC = () => {
     const {token} = useTokenContext();

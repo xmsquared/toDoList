@@ -5,9 +5,9 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { TodoForm } from "../../components/todoForm/todoForm";
-import { info_obj } from "../../interface/todoInterface";
-import { TodoTable } from "../../components/todoTable/todoTable";
+import { TodoForm } from "../../components/todoForm/";
+import { info_obj } from "../../interface/";
+import { TodoTable } from "../../components/todoTable/";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
