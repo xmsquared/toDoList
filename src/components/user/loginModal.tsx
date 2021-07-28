@@ -15,7 +15,7 @@ import { useTokenContext } from "../../context";
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
-export const LoginModal: React.FC = () =>{
+export const LoginModal: React.FC = () => {
   const {setToken} = useTokenContext();
   const [detail, setDetail] = useState<Login>(DefaultLogin);
   const [alertDetail, setAlertDetail] = useState(false);
@@ -31,11 +31,11 @@ export const LoginModal: React.FC = () =>{
   }
 
   useEffect(()=>{
-    if(loggedIn){
-      window.location.href = "/";
-    }
     if(alertDetail){
       window.setTimeout(()=>{setAlertDetail(false)},3000);
+    }
+    if(loggedIn){
+      window.location.href = "/";
     }
   }, [loggedIn, alertDetail])
 

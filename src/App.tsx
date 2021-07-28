@@ -1,5 +1,5 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import React, { useState } from 'react';
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import NavHeader from './components/header/nav-header';
@@ -16,10 +16,9 @@ import { setLocale } from 'react-redux-i18n';
 export const App: React.FC = () => {
 
   const [lang, setLang] = useState("en");
-
   const tempToken = (localStorage.getItem('token') ?? '');
-
   const [token, setToken] = useState(tempToken);
+  const [login, setLogin] = useState(false);
 
   const switchLocale = (code: string) => {
     store.dispatch(setLocale(code));
@@ -27,6 +26,12 @@ export const App: React.FC = () => {
       setLang(code);
     }
   }
+
+  useEffect(()=>{
+    if(token !== ''){
+      setLogin(true)
+    }
+  }, [token])
 
   return (
 
@@ -38,10 +43,12 @@ export const App: React.FC = () => {
       <BrowserRouter basename="/">
         <Switch>
           <Route path="/" component={LandingPage} exact/>
-          <Route path="/todo" component={Todo} exact/>
-          <Route path="/todo/:id" component={Detail} exact/>
           <Route path="/about" component={About} exact/>
-          <Route path="/regist" component={RegisterPage} exact/>
+          {login && <Route path="/todo" component={Todo} exact/>}
+          {login && <Route path="/todo/:id" component={Detail} exact/>}
+          {!login && <Route path="/regist" component={RegisterPage} exact/>}
+          <Route render={() => <Redirect to={{pathname: "/"}} />} />
+          
         </Switch>
       </BrowserRouter>
       </TokenContext.Provider>
