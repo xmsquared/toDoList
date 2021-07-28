@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -18,6 +19,23 @@ export const RegisterModal: React.FC = () =>{
   const {setToken} = useTokenContext();
   const [tempuser, setTempUser] = useState<User>(DefaultUser);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [passwordLength, setPasswordLength] = useState(false);
+  const [regitsterSuccess, setRegisterSuccess] = useState(false);
+  const [regitsterFailure, setRegitsterFailure] = useState(false);
+
+  useEffect(() => {
+    if(passwordLength){
+      window.setTimeout(()=>{setPasswordLength(false)},3000);
+    }
+
+    if(regitsterSuccess){
+      window.setTimeout(()=>{setRegisterSuccess(false)},3000);
+    }
+
+    if(regitsterFailure){
+      window.setTimeout(()=>{setRegitsterFailure(false)},3000);
+    }
+  }, [passwordLength, regitsterSuccess, regitsterFailure])
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -27,23 +45,34 @@ export const RegisterModal: React.FC = () =>{
     }))
   }
 
+  const checkPass = (password: string) => {
+    return password.length > 7;
+  }
+
   const register = (e) => {
     e.preventDefault();
     console.log(tempuser);
     setRegisterLoading(true);
-    
-    registerUser(tempuser)
-    .then(res => {
-      if(res.status){
-        setToken(res.token);
-        localStorage.setItem('token', JSON.stringify(res.token));
-        setRegisterLoading(false);
-      } else {
-        setRegisterLoading(false);
-      }
 
-    })
-    .catch(res => console.log(res));
+    if(checkPass(tempuser.password)){
+      registerUser(tempuser)
+      .then(res => {
+        if(res.status){
+          setRegisterSuccess(true);
+          setRegisterLoading(false);
+          localStorage.setItem('token', JSON.stringify(res.token));
+          setToken(res.token);
+        } else {
+          setRegitsterFailure(true);
+          setRegisterLoading(false);
+        }
+  
+      })
+      .catch(res => console.log(res));
+    }else{
+      setPasswordLength(true);
+      setRegisterLoading(false);
+    }
   }
 
   return(
@@ -67,7 +96,9 @@ export const RegisterModal: React.FC = () =>{
             <InputGroup>
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
-
+            <Alert variant="danger" show={passwordLength}>
+              Password has to be longer than 7
+            </Alert>
           </Form.Group>
 
           <Form.Group controlId="registAge">
@@ -92,6 +123,15 @@ export const RegisterModal: React.FC = () =>{
             )}
 
           </Row>
+
+          <Alert variant="danger" show={regitsterFailure}>
+              Please use unreigister email or log in 
+          </Alert>
+
+          
+          <Alert variant="success" show={regitsterSuccess}>
+              Register success!
+          </Alert>
 
         </Form>
       </Col>
