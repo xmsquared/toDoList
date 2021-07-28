@@ -16,7 +16,16 @@ const zh: Dictionary = {
     addNew: '添加',
     delete: '删除',
     submit: '提交',
-    operate: '操作'
+    operate: '操作',
+    registerUser: '注册',
+    username: '用户名',
+    email: '邮箱',
+    password: '密码',
+    rePassword: 'Re-enter Password',
+    age: '年龄',
+    login: "登录",
+    profile: "Profile",
+    updateInfo: "更新"
 }
 
 export default zh

@@ -1,25 +1,55 @@
+import React, { useState } from 'react';
 import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Translate } from 'react-redux-i18n';
-import { connect } from 'react-redux';
-import store from '../../i18n/store';
-import { setLocale } from 'react-redux-i18n';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const NavHeader: React.FC = () => {
-    const languages = [
-        {
-          code: 'en',
-          name: 'english(US)',
-        },
-        {
-          code: 'zh',
-          name: '汉语',
-        },
-    ]
+import { loggout } from '../../utils/user/TodoApiService';
+import { useTokenContext } from '../../App';
 
-    const switchLocale = (code: string) => {
-        store.dispatch(setLocale(code))
+library.add(faUser)
+
+interface Iprops{
+    switchLocale: (code: string) => void
+}
+
+const languages = [
+    {
+      code: 'en',
+      name: 'english(US)',
+    },
+    {
+      code: 'zh',
+      name: '汉语',
+    },
+]
+
+const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
+    const [login, setLogin] = useState(false);
+    const {token} = useTokenContext();
+
+    if(!login){
+        if(token!==''){
+            setLogin(true);
+        }
+    }
+
+    function handleloggout(){
+        if(token !== ''){
+            const tempToken = JSON.parse(token);
+            console.log(tempToken)
+            loggout(tempToken)
+            .then(res => {
+                if(res){
+                    localStorage.removeItem("token");
+                    setLogin(false);
+                    window.location.href = "/";
+                }
+            })
+        }
     }
 
     return(
@@ -28,11 +58,34 @@ const NavHeader: React.FC = () => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="justify-content-end">
                     <Nav.Item>
-                    <Nav.Link href="/todo"><Translate value="todo"/></Nav.Link>
+                    <Nav.Link href="/"><Translate value="home"/></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                     <Nav.Link href="/about"><Translate value="about"/></Nav.Link>
                     </Nav.Item>
+                    {login &&                     
+                        <Nav.Item>
+                        <Nav.Link href="/todo"><Translate value="todo"/></Nav.Link>
+                        </Nav.Item> 
+                    }
+
+
+                </Nav>
+                <Nav className="ml-auto">
+                    <NavDropdown title={<FontAwesomeIcon icon={faUser} />} id="basic-nav-dropdown">
+                        {login ? (
+                            <React.Fragment>
+                                <NavDropdown.Item href="/todo">Todo List</NavDropdown.Item>
+                                <NavDropdown.Item onClick={handleloggout}>Log Out</NavDropdown.Item>
+                            </React.Fragment> 
+                        ):(
+                            <React.Fragment>
+                                <NavDropdown.Item href="/regist">Register</NavDropdown.Item>
+                                <NavDropdown.Item href="/">Log in</NavDropdown.Item>
+                            </React.Fragment> 
+                        )}
+
+                    </NavDropdown>
                     <NavDropdown title={<Translate value="language"/>} id="basic-nav-dropdown">
                         {                               
                             languages.map((item, index)=> {
@@ -49,4 +102,4 @@ const NavHeader: React.FC = () => {
     )
 }
 
-export default connect()(NavHeader)
+export default NavHeader

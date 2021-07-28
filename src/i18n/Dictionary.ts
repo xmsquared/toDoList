@@ -17,4 +17,13 @@ export type Dictionary = {
     delete: string
     submit: string
     operate: string
+    registerUser: string
+    username: string
+    email: string
+    password: string
+    rePassword: string
+    age: string
+    login: string
+    profile: string
+    updateInfo: string
 } & SubTranslationObject

@@ -16,7 +16,16 @@ const en: Dictionary = {
     addNew: 'Add New',
     delete: 'Delete',
     submit: 'Submit',
-    operate: 'Operate'
+    operate: 'Operate',
+    registerUser: 'Register',
+    username: 'Username',
+    email: 'Email',
+    password: 'Password',
+    rePassword: 'Re-enter Password',
+    age: 'Age',
+    login: "Log in",
+    profile: "Profile",
+    updateInfo: "update"
 }
 
 export default en
