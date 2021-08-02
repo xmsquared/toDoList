@@ -16,7 +16,9 @@ import { setLocale } from 'react-redux-i18n';
 export const App: React.FC = () => {
 
   const [lang, setLang] = useState("en");
-  const tempToken = (localStorage.getItem('token') ?? '');
+  const storedToken = localStorage.getItem('token');
+  const tempToken = storedToken != null ? JSON.parse(storedToken) : null;
+
   const [token, setToken] = useState(tempToken);
   const [login, setLogin] = useState(false);
 
@@ -28,7 +30,7 @@ export const App: React.FC = () => {
   }
 
   useEffect(()=>{
-    if(token !== ''){
+    if(token !== null){
       setLogin(true)
     }
   }, [token])

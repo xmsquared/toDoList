@@ -10,7 +10,7 @@ export const LandingPage: React.FC = () => {
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(()=>{
-        if(token !== ''){
+        if(token !== null){
             setLoggedIn(true)
         }
     }, [token])

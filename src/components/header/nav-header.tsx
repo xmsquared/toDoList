@@ -32,7 +32,7 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
     const {token} = useTokenContext();
 
     if(!login){
-        if(token!==''){
+        if(token !== null){
             setLogin(true);
         }
     }
