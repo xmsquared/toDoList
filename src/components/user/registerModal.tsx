@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { User , DefaultUser } from '../../interface/userInterface';
-import { registerUser } from '../../utils/user/TodoApiService';
+import { registerUser } from '../../utils/';
 import { useTokenContext } from '../../context';
 
 declare function require(name:string);

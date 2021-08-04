@@ -7,7 +7,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { loggout } from '../../utils/user/TodoApiService';
+import { loggout , redirectToHome } from '../../utils/';
 import { useTokenContext } from '../../context';
 
 library.add(faUser)
@@ -44,7 +44,7 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
                 if(res){
                     localStorage.removeItem("token");
                     setLogin(false);
-                    window.location.href = "/";
+                    redirectToHome();
                 }
             })
         }

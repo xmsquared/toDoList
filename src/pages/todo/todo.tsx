@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { TodoForm } from "../../components/todoForm/";
 import { DefaultInfo} from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
-import { addTask, getAllTask, deleteTask } from '../../utils/task/taskApiService';
+import { addTask, getAllTask, deleteTask, redirectToHome } from '../../utils/';
 import { useTokenContext } from '../../context/';
 
 declare function require(name:string);
@@ -191,7 +191,7 @@ const Todo: React.FC = () =>{
                     setDeleteLoading(false);
                     setNote('delete unsuccessful, please re-try it agian!');
                     setNoteShow(true);
-                    window.location.href = '/';
+                    redirectToHome();
                     break;
                 }
             }

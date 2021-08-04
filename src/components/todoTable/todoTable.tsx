@@ -42,9 +42,9 @@ export const TodoTable: React.FC<IProps> = ({
 
             <tbody>
             {
-                data.map((item, index)=> {
+                data.map((item)=> {
                     return(
-                        <tr key={index}>
+                        <tr key={item.id}>
                             <th>
                                 <label>
                                 <input

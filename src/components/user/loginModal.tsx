@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { Login , DefaultLogin} from '../../interface/';
-import { loginUserByEmail } from '../../utils/user/TodoApiService';
+import { loginUserByEmail , redirectToHome } from '../../utils/';
 import { useTokenContext } from "../../context";
 
 declare function require(name:string);
@@ -35,7 +35,7 @@ export const LoginModal: React.FC = () => {
       window.setTimeout(()=>{setAlertDetail(false)},3000);
     }
     if(loggedIn){
-      window.location.href = "/";
+      redirectToHome();
     }
   }, [loggedIn, alertDetail])
 

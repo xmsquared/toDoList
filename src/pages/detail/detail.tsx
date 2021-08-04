@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTokenContext } from "../../context";
 import { DefaultInfo } from "../../interface";
-import { getOneTask } from "../../utils/task/taskApiService";
+import { getOneTask } from "../../utils/";
 
 import Spinner from 'react-bootstrap/Spinner';
 
