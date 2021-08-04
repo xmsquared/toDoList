@@ -25,7 +25,8 @@ const zh: Dictionary = {
     age: '年龄',
     login: "登录",
     profile: "Profile",
-    updateInfo: "更新"
+    updateInfo: "更新",
+    loading: "加载中"
 }
 
 export default zh

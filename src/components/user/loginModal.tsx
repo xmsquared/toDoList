@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
@@ -22,7 +22,7 @@ export const LoginModal: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   
-  function onChangeInfo(e){
+  const onChangeInfo = (e) => {
     const { name, value } = e.target;
     setDetail(prevState=>({
         ...prevState,
@@ -39,9 +39,11 @@ export const LoginModal: React.FC = () => {
     }
   }, [loggedIn, alertDetail])
 
-  function login(e){
+  const login = (e) => {
     e.preventDefault();
+    console.log(detail);
     setLoginLoading(true);
+    
     loginUserByEmail(detail)
     .then(res => {
       if(res.status){
@@ -57,6 +59,23 @@ export const LoginModal: React.FC = () => {
     
     setDetail(DefaultLogin);
   }
+
+  var string = I18n.t('loading');
+
+  const LoadingSpinner = useMemo(() => {
+    return (
+      <Button block variant="dark" disabled>
+      <Spinner
+        as="span"
+        animation="grow"
+        size="sm"
+        role="status"
+        aria-hidden="true"
+      />
+       {I18n.t('loading')}
+      </Button>
+    )
+  }, [string])
 
   return(
       <Container fluid>
@@ -82,16 +101,7 @@ export const LoginModal: React.FC = () => {
           
           <Row>
             {loginLoading ? (
-              <Button block variant="dark" disabled>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-                Loading...
-              </Button>
+              LoadingSpinner
             ):(
               <Button block variant = "dark" type="submit">{ I18n.t('login') }</Button>
             )}

@@ -25,7 +25,8 @@ const en: Dictionary = {
     age: 'Age',
     login: "Log in",
     profile: "Profile",
-    updateInfo: "update"
+    updateInfo: "update",
+    loading: "Loading"
 }
 
 export default en

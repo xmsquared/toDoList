@@ -26,4 +26,5 @@ export type Dictionary = {
     login: string
     profile: string
     updateInfo: string
+    loading: string
 } & SubTranslationObject
