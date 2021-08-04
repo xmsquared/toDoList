@@ -5,7 +5,7 @@ import { useTokenContext } from "../../context";
 export const RegisterPage: React.FC = () =>{
     const {token} = useTokenContext();
     
-    if(token !== ''){
+    if(token !== null){
         window.location.href = "/";
     }
 

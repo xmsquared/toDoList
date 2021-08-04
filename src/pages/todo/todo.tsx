@@ -29,7 +29,7 @@ const Todo: React.FC = () =>{
     const [deleteLoading, setDeleteLoading] = useState(false);
 
     useEffect(() => {
-        getAllTask(JSON.parse(token))
+        getAllTask(token)
         .then(res => {
             if(res.todoNum > 0) {
                 setData([...res.todoList])
@@ -110,8 +110,7 @@ const Todo: React.FC = () =>{
         } else {
             setAddNewLoading(true);
             var tempData = info.description + "||" + info.category + "||" + info.content + "||" + info.deadline.toLocaleDateString();
-            const tempToken = JSON.parse(token);
-            addTask(tempToken, tempData)
+            addTask(token, tempData)
             .then(res => {
                 if(res.status){
                     const tempInfo = {
@@ -149,8 +148,7 @@ const Todo: React.FC = () =>{
     }, [noteShow, validShow])
 
     function handleDelete(id){
-        const tempToken = JSON.parse(token);
-        return deleteTask(tempToken, id)
+        return deleteTask(token, id)
         .then(res => {
             if(res.status){
                 return true

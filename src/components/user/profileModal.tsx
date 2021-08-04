@@ -23,8 +23,7 @@ export const ProfileModal: React.FC = () =>{
   const [updateLoading, setUpdateLoading] = useState(false);
   
   useEffect(()=>{
-    const tempToken = JSON.parse(token);
-    getUserDetailByToken(tempToken)
+    getUserDetailByToken(token)
     .then(res =>{
       setUserInfo({name: res.name, age: res.age, email: res.email, password: ''})
     })
@@ -52,8 +51,7 @@ export const ProfileModal: React.FC = () =>{
     e.preventDefault();
     console.log(userInfo);
     setUpdateLoading(true);
-    const tempToken = JSON.parse(token);
-    updateProfile(userInfo, tempToken)
+    updateProfile(userInfo, token)
     .then(res => {
       if (res){
         setUpdateSuccess(true);

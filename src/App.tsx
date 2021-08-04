@@ -49,7 +49,6 @@ export const App: React.FC = () => {
           {login && <Route path="/todo" component={Todo} exact/>}
           {login && <Route path="/todo/:id" component={Detail} exact/>}
           {!login && <Route path="/regist" component={RegisterPage} exact/>}
-          <Route render={() => <Redirect to={{pathname: "/"}} />} />
           
         </Switch>
       </BrowserRouter>

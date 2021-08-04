@@ -17,8 +17,7 @@ const Detail: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(()=>{
-        const tempToken = JSON.parse(token);
-        getOneTask(tempToken, id)
+        getOneTask(token, id)
         .then(res => {
             if(res.status){
                 setData(res.data)

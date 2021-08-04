@@ -38,10 +38,8 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
     }
 
     const handleloggout = () => {
-        if(token !== ''){
-            const tempToken = JSON.parse(token);
-            console.log(tempToken)
-            loggout(tempToken)
+        if(token !== null){
+            loggout(token)
             .then(res => {
                 if(res){
                     localStorage.removeItem("token");
