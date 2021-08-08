@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { TodoForm } from "../../components/todoForm/";
 import { DefaultInfo} from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
-import { addTask, getAllTask, deleteTask, redirectToHome } from '../../utils/';
+import { addTask, getAllTask, deleteTask, redirectToHome, dateToNum } from '../../utils/';
 import { useTokenContext } from '../../context/';
 
 declare function require(name:string);
@@ -38,13 +38,7 @@ const Todo: React.FC = () =>{
 
     }, [token])
 
-    const dateToNum = (d) => {
-        var time = d.toLocaleDateString()
-        time = time.split("/"); 
-        return Number(time[0]+time[1]+time[2]);
-    }
-
-    function sortByDeadLine(){
+    const sortByDeadLine = () => {
         var tempData = [...data];
         if(data.length > 1){
             if(dateToNum(data[0].deadline) > dateToNum(data[1].deadline)){
@@ -61,7 +55,7 @@ const Todo: React.FC = () =>{
         
     }
 
-    function handleInfoChange(e) {
+    const handleInfoChange = (e) => {
         const { name, value } = e.target;
         setInfo(prevState=>({
             ...prevState,
@@ -69,14 +63,14 @@ const Todo: React.FC = () =>{
         }))
     }
 
-    function handleDatePicker(e){
+    const handleDatePicker = (e) => {
         setInfo(prevState=>({
             ...prevState,
             "deadline": e
         }))
     }
 
-    function selectAll(e){
+    const selectAll = (e) => {
 
         var checked = e.target.checked;
         if (checked) {
@@ -87,7 +81,7 @@ const Todo: React.FC = () =>{
         }
     }
  
-    function selectOne(e, id){
+    const selectOne = (e, id) => {
         const checked = e.target.checked;
         if(checked){
             var tempSelect = [...selectData];
@@ -102,7 +96,7 @@ const Todo: React.FC = () =>{
         }
     }
 
-    function addNew(e){
+    const addNew = (e) => {
         e.preventDefault();
 
         if(info.description === ""){
@@ -147,7 +141,7 @@ const Todo: React.FC = () =>{
         }
     }, [noteShow, validShow])
 
-    function handleDelete(id){
+    const handleDelete = (id) =>{
         return deleteTask(token, id)
         .then(res => {
             if(res.status){
@@ -161,7 +155,7 @@ const Todo: React.FC = () =>{
         })
     }
 
-    function deleteOne(id){
+    const deleteOne = (id) => {
         setDeleteLoading(true);
         if(handleDelete(id)){
             var tempResult = [...data];
@@ -180,7 +174,7 @@ const Todo: React.FC = () =>{
         
     }
 
-    function deleteSelect(e){
+    const deleteSelect = (e) => {
         e.preventDefault();
         setDeleteLoading(true);
         var i = selectData.length;

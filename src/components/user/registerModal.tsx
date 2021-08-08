@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { User , DefaultUser } from '../../interface/userInterface';
-import { registerUser } from '../../utils/';
+import { registerUser, checkPass } from '../../utils/';
 import { useTokenContext } from '../../context';
 
 declare function require(name:string);
@@ -37,17 +37,13 @@ export const RegisterModal: React.FC = () =>{
     }
   }, [passwordLength, regitsterSuccess, regitsterFailure])
 
-  const onChangeInfo = (e) => {
+  const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
     setTempUser(prevState=>({
         ...prevState,
         [name]: value
     }))
-  }
-
-  const checkPass = (password: string) => {
-    return password.length > 7;
-  }
+  }, [])
 
   const register = (e) => {
     e.preventDefault();
@@ -97,7 +93,7 @@ export const RegisterModal: React.FC = () =>{
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
             <Alert variant="danger" show={passwordLength}>
-              Password has to be longer than 7
+              { I18n.t('passwordLength') }
             </Alert>
           </Form.Group>
 
@@ -125,12 +121,12 @@ export const RegisterModal: React.FC = () =>{
           </Row>
 
           <Alert variant="danger" show={regitsterFailure}>
-              Please use unreigister email or log in 
+            { I18n.t('registerFailure') }
           </Alert>
 
           
           <Alert variant="success" show={regitsterSuccess}>
-              Register success!
+            { I18n.t('registerSuccess') }
           </Alert>
 
         </Form>

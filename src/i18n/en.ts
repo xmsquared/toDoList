@@ -26,7 +26,12 @@ const en: Dictionary = {
     login: "Log in",
     profile: "Profile",
     updateInfo: "update",
-    loading: "Loading"
+    loading: "Loading",
+    updateSuccess: "update detail success!",
+    updateFailure: "Unable to update your details, please try it later",
+    passwordLength: "Password has to be longer than 7",
+    registerSuccess: "Register success!",
+    registerFailure: "Please use unreigister email or log in ",
 }
 
 export default en

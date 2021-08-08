@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
@@ -11,7 +11,6 @@ import Spinner from 'react-bootstrap/Spinner';
 import { Login , DefaultLogin} from '../../interface/';
 import { loginUserByEmail , redirectToHome } from '../../utils/';
 import { useTokenContext } from "../../context";
-
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
@@ -21,14 +20,15 @@ export const LoginModal: React.FC = () => {
   const [alertDetail, setAlertDetail] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
-  
-  const onChangeInfo = (e) => {
+
+  const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
     setDetail(prevState=>({
         ...prevState,
         [name]: value
     }))
-  }
+  }, [])
+
 
   useEffect(()=>{
     if(alertDetail){
@@ -60,7 +60,7 @@ export const LoginModal: React.FC = () => {
     setDetail(DefaultLogin);
   }
 
-  var string = I18n.t('loading');
+  var loadingString = I18n.t('loading');
 
   const LoadingSpinner = useMemo(() => {
     return (
@@ -75,7 +75,7 @@ export const LoginModal: React.FC = () => {
        {I18n.t('loading')}
       </Button>
     )
-  }, [string])
+  }, [loadingString])
 
   return(
       <Container fluid>

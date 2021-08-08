@@ -49,7 +49,6 @@ export const ProfileModal: React.FC = () =>{
 
   const updateInfo = (e) => {
     e.preventDefault();
-    console.log(userInfo);
     setUpdateLoading(true);
     updateProfile(userInfo, token)
     .then(res => {
@@ -102,7 +101,7 @@ export const ProfileModal: React.FC = () =>{
                 role="status"
                 aria-hidden="true"
               />
-                Loading...
+                { I18n.t('loading') }
               </Button>
               
             ):(
@@ -111,10 +110,10 @@ export const ProfileModal: React.FC = () =>{
           
           </Row>
           <Alert variant="success" show={updateSuccess}>
-            update detail success!
+            { I18n.t('updateSuccess') }
           </Alert>
           <Alert variant="danger" show={updateFailure}>
-            Unable to update your details, please try it later
+            { I18n.t('updateFailure') }
           </Alert>
 
         </Form>
