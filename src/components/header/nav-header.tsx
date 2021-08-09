@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { loggout , redirectToHome } from '../../utils/';
 import { useTokenContext } from '../../context';
 
+declare function require(name:string);
+var I18n = require('react-redux-i18n').I18n;
+
 library.add(faUser)
 
 interface IProps{
@@ -56,14 +59,14 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="justify-content-end">
                     <Nav.Item>
-                    <Nav.Link href="/"><Translate value="home"/></Nav.Link>
+                    <Nav.Link href="/">{ I18n.t('home') }</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                    <Nav.Link href="/about"><Translate value="about"/></Nav.Link>
+                    <Nav.Link href="/about">{ I18n.t('about') }</Nav.Link>
                     </Nav.Item>
                     {login &&                     
                         <Nav.Item>
-                        <Nav.Link href="/todo"><Translate value="todo"/></Nav.Link>
+                        <Nav.Link href="/todo">{ I18n.t('todo') }</Nav.Link>
                         </Nav.Item> 
                     }
 
@@ -84,7 +87,7 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
                         )}
 
                     </NavDropdown>
-                    <NavDropdown title={<Translate value="language"/>} id="basic-nav-dropdown">
+                    <NavDropdown title={ I18n.t('language') } id="basic-nav-dropdown">
                         {                               
                             languages.map((item, index)=> {
                                 return(
