@@ -1,7 +1,20 @@
-export interface info_obj{
+export interface InfoObj{
     description: string,
     category: string,
     content: string,
     deadline: Date,
-    id: number
+    id: string
+}
+
+export interface ResData{
+    description: string,
+    _id: string,
+}
+
+export const DefaultInfo: InfoObj = {
+    description: '',
+    category: '',
+    content: '',
+    deadline: new Date(),
+    id: ''
 }

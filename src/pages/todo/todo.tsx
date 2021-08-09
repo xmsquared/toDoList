@@ -3,44 +3,42 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Spinner from 'react-bootstrap/Spinner';
 import "react-datepicker/dist/react-datepicker.css";
 
-import { TodoForm } from "../../components/todoForm/todoForm";
-import { info_obj } from "../../interface/todoInterface";
-import { TodoTable } from "../../components/todoTable/todoTable";
+import { TodoForm } from "../../components/todoForm/";
+import { DefaultInfo} from "../../interface/";
+import { TodoTable } from "../../components/todoTable/";
+import { addTask, getAllTask, deleteTask, redirectToHome, dateToNum } from '../../utils/';
+import { useTokenContext } from '../../context/';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 const Todo: React.FC = () =>{
-
-    const [info, setInfo] = useState<info_obj>({description: "", category: "css", content: "", deadline: new Date(), id: Math.floor(Math.random() * 1000)});
+    const {token} = useTokenContext();
+    const [info, setInfo] = useState(DefaultInfo);
     const [selectData, setSelectData] = useState([]) as any;
     const [data, setData] = useState([]) as any;
+
     const [noteShow, setNoteShow] = useState(false);
     const [validShow, setValidShow] = useState(false);
     const [note, setNote] = useState("add/delete success");
     const [todoShow, setToDoShow] = useState(false);
+    const [addNewLoading, setAddNewLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     useEffect(() => {
-        var keys = Object.keys(localStorage);
-        
-        const values = [] as any;
-        if(keys.length > 0){
-            var i = keys.length;
-            while ( i-- ) {
-                var temp_data = JSON.parse(localStorage.getItem(keys[i]) ?? '');
-                values.push(temp_data);
+        getAllTask(token)
+        .then(res => {
+            if(res.todoNum > 0) {
+                setData([...res.todoList])
             }
-            setData([...values]);
-        } 
-    }, [])
+        })
 
-    function dateToNum(d) {
-        d = d.split("/"); return Number(d[0]+d[1]+d[2]);
-    }
+    }, [token])
 
-    function sortByDeadLine(){
+    const sortByDeadLine = () => {
         var tempData = [...data];
         if(data.length > 1){
             if(dateToNum(data[0].deadline) > dateToNum(data[1].deadline)){
@@ -57,7 +55,7 @@ const Todo: React.FC = () =>{
         
     }
 
-    function handleInfoChange(e) {
+    const handleInfoChange = (e) => {
         const { name, value } = e.target;
         setInfo(prevState=>({
             ...prevState,
@@ -65,14 +63,14 @@ const Todo: React.FC = () =>{
         }))
     }
 
-    function handleDatePicker(e){
+    const handleDatePicker = (e) => {
         setInfo(prevState=>({
             ...prevState,
             "deadline": e
         }))
     }
 
-    function selectAll(e){
+    const selectAll = (e) => {
 
         var checked = e.target.checked;
         if (checked) {
@@ -83,7 +81,7 @@ const Todo: React.FC = () =>{
         }
     }
  
-    function selectOne(e, id){
+    const selectOne = (e, id) => {
         const checked = e.target.checked;
         if(checked){
             var tempSelect = [...selectData];
@@ -98,32 +96,39 @@ const Todo: React.FC = () =>{
         }
     }
 
-    function addNew(e){
+    const addNew = (e) => {
         e.preventDefault();
+
         if(info.description === ""){
             setValidShow(true);
         } else {
-            var tempData = {
-                description: info.description,
-                category: info.category,
-                content: info.content,
-                deadline: info.deadline.toLocaleDateString(),
-                id: info.id,
-            }
-    
-            localStorage.setItem(String(tempData.id), JSON.stringify(tempData));
-    
-            var tempResult = [...data];
-            tempResult.push(tempData);
-    
-            setData([...tempResult]);
-    
-            setInfo({description: "", category: "css", content: "", deadline: new Date(), id: Math.floor(Math.random() * 1000)});
-            setToDoShow(false);
-    
-            setNote(I18n.t('alertAdd'));
+            setAddNewLoading(true);
+            var tempData = info.description + "||" + info.category + "||" + info.content + "||" + info.deadline.toLocaleDateString();
+            addTask(token, tempData)
+            .then(res => {
+                if(res.status){
+                    const tempInfo = {
+                        description: info.description,
+                        category: info.category,
+                        content: info.content,
+                        deadline: info.deadline,
+                        id: res.id
+                    }
+                    var tempResult = [...data];
+                    tempResult.push(tempInfo);
+                    setData([...tempResult]);
+                    setInfo(DefaultInfo);
+                    setToDoShow(false);
+                    setNote(I18n.t('alertAdd'));
+                    setNoteShow(true);
+                    setAddNewLoading(false);
+                } else {
+                    setNote("add new task failed, please tried again later!");
+                    setNoteShow(true);
+                    setAddNewLoading(false);
+                }
+            })
 
-            setNoteShow(true);
         }
     }
 
@@ -136,26 +141,53 @@ const Todo: React.FC = () =>{
         }
     }, [noteShow, validShow])
 
-    function handleDelete(id){
-        localStorage.removeItem(id);
-        var tempResult = [...data];
-        tempResult = tempResult.filter(function(item){
-            return item.id !== id
+    const handleDelete = (id) =>{
+        return deleteTask(token, id)
+        .then(res => {
+            if(res.status){
+                return true
+            }else{
+                return false
+            }
         })
-
-        setData([...tempResult]);
-        setNote(I18n.t('alertRemove'));
-
-        setNoteShow(true);
+        .catch(error => {
+            return false
+        })
     }
 
-    function deleteSelect(e){
+    const deleteOne = (id) => {
+        setDeleteLoading(true);
+        if(handleDelete(id)){
+            var tempResult = [...data];
+            tempResult = tempResult.filter(function(item){
+                return item.id !== id
+            });
+            setData(tempResult);
+            setDeleteLoading(false);
+            setNote(I18n.t('alertRemove'));
+            setNoteShow(true);
+        }else{
+            setDeleteLoading(false);
+            setNote('delete unsuccessful, please re-try it agian!');
+            setNoteShow(true);
+        }
+        
+    }
+
+    const deleteSelect = (e) => {
         e.preventDefault();
+        setDeleteLoading(true);
         var i = selectData.length;
         if(i > 0){
             while(i--){
                 var deleteId = selectData[i];
-                localStorage.removeItem(deleteId);
+                if(!handleDelete(deleteId)){
+                    setDeleteLoading(false);
+                    setNote('delete unsuccessful, please re-try it agian!');
+                    setNoteShow(true);
+                    redirectToHome();
+                    break;
+                }
             }
             var tempResult = [...data];
             tempResult = tempResult.filter(function(item){
@@ -164,10 +196,9 @@ const Todo: React.FC = () =>{
 
             setSelectData([]);
             setData(tempResult);
-            
+            setDeleteLoading(false);
             setNote(I18n.t('alertRemove'));
-
-            setNoteShow(true)
+            setNoteShow(true);
         }
     }
 
@@ -193,12 +224,40 @@ const Todo: React.FC = () =>{
                 </Col>
 
                 <Col xs="auto">
-                    <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
-                        {I18n.t('addNew')}
-                    </Button> {' '}
-                    <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
-                        {I18n.t('delete')}
-                    </Button> {' '}
+                    {addNewLoading ? (
+                        <Button style={{marginBottom: "2rem"}} disabled>
+                        <Spinner
+                            as="span"
+                            animation="grow"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        />
+                            Loading...
+                        </Button>
+                    ):(
+                        <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
+                            {I18n.t('addNew')}
+                        </Button>
+                    )}
+                    {' '}
+                    {deleteLoading? (
+                        <Button variant="danger" disabled style={{marginBottom: "2rem"}}>
+                        <Spinner
+                            as="span"
+                            animation="grow"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        />
+                            Loading...
+                        </Button>
+                    ):(
+                        <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
+                            {I18n.t('delete')}
+                        </Button> 
+                    )}
+                    {' '}
                     {data.length > 0 && 
                         <TodoTable
                             selectAll = { selectAll }
@@ -206,7 +265,7 @@ const Todo: React.FC = () =>{
                             sortByDeadLine = { sortByDeadLine }
                             data = { data }
                             selectData = { selectData }
-                            handleDelete = { handleDelete }
+                            deleteOne = { deleteOne }
                         />
                     }
                 </Col>

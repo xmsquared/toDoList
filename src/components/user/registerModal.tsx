@@ -1,47 +1,80 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 
-import { User } from '../../interface/userInterface';
-import { registerUser } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { User , DefaultUser } from '../../interface/userInterface';
+import { registerUser, checkPass } from '../../utils/';
+import { useTokenContext } from '../../context';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const RegisterModal: React.FC = () =>{
-  const [tempuser, setTempUser] = useState<User>({name: '', email: '', password: '', age: 0});
-  
   const {setToken} = useTokenContext();
+  const [tempuser, setTempUser] = useState<User>(DefaultUser);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [passwordLength, setPasswordLength] = useState(false);
+  const [regitsterSuccess, setRegisterSuccess] = useState(false);
+  const [regitsterFailure, setRegitsterFailure] = useState(false);
 
-  function onChangeInfo(e){
+  useEffect(() => {
+    if(passwordLength){
+      window.setTimeout(()=>{setPasswordLength(false)},3000);
+    }
+
+    if(regitsterSuccess){
+      window.setTimeout(()=>{setRegisterSuccess(false)},3000);
+    }
+
+    if(regitsterFailure){
+      window.setTimeout(()=>{setRegitsterFailure(false)},3000);
+    }
+  }, [passwordLength, regitsterSuccess, regitsterFailure])
+
+  const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
     setTempUser(prevState=>({
         ...prevState,
         [name]: value
     }))
-  }
+  }, [])
 
-  function regist(e) {
+  const register = (e) => {
     e.preventDefault();
     console.log(tempuser);
-    registerUser(tempuser)
-    .then(res => {
-      setToken(res.token);
-      localStorage.setItem('token', JSON.stringify(res.token));
-    })
-    .catch(res => console.log(res));
+    setRegisterLoading(true);
+
+    if(checkPass(tempuser.password)){
+      registerUser(tempuser)
+      .then(res => {
+        if(res.status){
+          setRegisterSuccess(true);
+          setRegisterLoading(false);
+          localStorage.setItem('token', JSON.stringify(res.token));
+          setToken(res.token);
+        } else {
+          setRegitsterFailure(true);
+          setRegisterLoading(false);
+        }
+  
+      })
+      .catch(res => console.log(res));
+    }else{
+      setPasswordLength(true);
+      setRegisterLoading(false);
+    }
   }
 
   return(
       <Container fluid>
       <Col>
-        <Form onSubmit={regist}>
+        <Form onSubmit={register}>
           <h4>{ I18n.t('registerUser') }</h4>
 
           <Form.Group controlId="registUsername">
@@ -59,7 +92,9 @@ export const RegisterModal: React.FC = () =>{
             <InputGroup>
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
-
+            <Alert variant="danger" show={passwordLength}>
+              { I18n.t('passwordLength') }
+            </Alert>
           </Form.Group>
 
           <Form.Group controlId="registAge">
@@ -68,8 +103,31 @@ export const RegisterModal: React.FC = () =>{
           </Form.Group>
           
           <Row>
-          <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
+            {registerLoading? (
+              <Button block variant="dark" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+                Loading...
+              </Button>
+            ):(
+              <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
+            )}
+
           </Row>
+
+          <Alert variant="danger" show={regitsterFailure}>
+            { I18n.t('registerFailure') }
+          </Alert>
+
+          
+          <Alert variant="success" show={regitsterSuccess}>
+            { I18n.t('registerSuccess') }
+          </Alert>
 
         </Form>
       </Col>

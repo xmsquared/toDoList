@@ -25,7 +25,13 @@ const zh: Dictionary = {
     age: '年龄',
     login: "登录",
     profile: "Profile",
-    updateInfo: "更新"
+    updateInfo: "更新",
+    loading: "加载中",
+    updateSuccess: "更新成功",
+    updateFailure: "更新失败，请稍后重试",
+    passwordLength: "密码长度必须大于7",
+    registerSuccess: "注册成功",
+    registerFailure: "注册失败，请使用未注册邮箱或者登录",
 }
 
 export default zh

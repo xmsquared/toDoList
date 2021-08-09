@@ -7,12 +7,15 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { loggout } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { loggout , redirectToHome } from '../../utils/';
+import { useTokenContext } from '../../context';
+
+declare function require(name:string);
+var I18n = require('react-redux-i18n').I18n;
 
 library.add(faUser)
 
-interface Iprops{
+interface IProps{
     switchLocale: (code: string) => void
 }
 
@@ -27,26 +30,24 @@ const languages = [
     },
 ]
 
-const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
+const NavHeader: React.FC<IProps> = ({switchLocale}) => {
     const [login, setLogin] = useState(false);
     const {token} = useTokenContext();
 
     if(!login){
-        if(token!==''){
+        if(token !== null){
             setLogin(true);
         }
     }
 
-    function handleloggout(){
-        if(token !== ''){
-            const tempToken = JSON.parse(token);
-            console.log(tempToken)
-            loggout(tempToken)
+    const handleloggout = () => {
+        if(token !== null){
+            loggout(token)
             .then(res => {
                 if(res){
                     localStorage.removeItem("token");
                     setLogin(false);
-                    window.location.href = "/";
+                    redirectToHome();
                 }
             })
         }
@@ -58,14 +59,14 @@ const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="justify-content-end">
                     <Nav.Item>
-                    <Nav.Link href="/"><Translate value="home"/></Nav.Link>
+                    <Nav.Link href="/">{ I18n.t('home') }</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                    <Nav.Link href="/about"><Translate value="about"/></Nav.Link>
+                    <Nav.Link href="/about">{ I18n.t('about') }</Nav.Link>
                     </Nav.Item>
                     {login &&                     
                         <Nav.Item>
-                        <Nav.Link href="/todo"><Translate value="todo"/></Nav.Link>
+                        <Nav.Link href="/todo">{ I18n.t('todo') }</Nav.Link>
                         </Nav.Item> 
                     }
 
@@ -86,7 +87,7 @@ const NavHeader: React.FC<Iprops> = ({switchLocale}) => {
                         )}
 
                     </NavDropdown>
-                    <NavDropdown title={<Translate value="language"/>} id="basic-nav-dropdown">
+                    <NavDropdown title={ I18n.t('language') } id="basic-nav-dropdown">
                         {                               
                             languages.map((item, index)=> {
                                 return(

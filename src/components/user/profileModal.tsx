@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect} from 'react';
+import React, { useState, useEffect}  from "react";
 import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -7,22 +6,24 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 
-import { User } from '../../interface/userInterface';
-import { updateProfile, getUserDetailByToken } from '../../utils/user/TodoApiService';
-import { useTokenContext } from '../../App';
+import { User , DefaultUser} from '../../interface/userInterface';
+import { updateProfile, getUserDetailByToken } from '../../utils';
+import { useTokenContext } from '../../context';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
-  const [userInfo, setUserInfo] = useState<User>({name: '', email: '', password: '', age: 0});
-  const [updateSuccess, setUpdateSuccess] = useState(true);
+  const [userInfo, setUserInfo] = useState<User>(DefaultUser);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [updateFailure, setUpdateFailure] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
   
   useEffect(()=>{
-    const tempToken = JSON.parse(token);
-    getUserDetailByToken(tempToken)
+    getUserDetailByToken(token)
     .then(res =>{
       setUserInfo({name: res.name, age: res.age, email: res.email, password: ''})
     })
@@ -32,9 +33,13 @@ export const ProfileModal: React.FC = () =>{
     if(updateSuccess){
       window.setTimeout(()=>{setUpdateSuccess(false)},3000);
     }
-  }, [updateSuccess])
 
-  function onChangeInfo(e){
+    if(updateFailure){
+      window.setTimeout(()=>{setUpdateFailure(false)},3000);
+    }
+  }, [updateSuccess, updateFailure])
+
+  const onChangeInfo = (e) => {
     const { name, value } = e.target;
     setUserInfo(prevState=>({
         ...prevState,
@@ -42,14 +47,17 @@ export const ProfileModal: React.FC = () =>{
     }))
   }
 
-  function updateInfo(e){
+  const updateInfo = (e) => {
     e.preventDefault();
-    console.log(userInfo);
-    const tempToken = JSON.parse(token);
-    updateProfile(userInfo, tempToken)
+    setUpdateLoading(true);
+    updateProfile(userInfo, token)
     .then(res => {
       if (res){
         setUpdateSuccess(true);
+        setUpdateLoading(false);
+      }else{
+        setUpdateFailure(true);
+        setUpdateLoading(false);
       }
     });
   }
@@ -84,10 +92,28 @@ export const ProfileModal: React.FC = () =>{
           </Form.Group>
           
           <Row>
-          <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
+            {updateLoading?(
+              <Button block variant="dark" disabled>
+              <Spinner
+                as="span"
+                animation="grow"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+                { I18n.t('loading') }
+              </Button>
+              
+            ):(
+              <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
+            )}
+          
           </Row>
           <Alert variant="success" show={updateSuccess}>
-            update detail success!
+            { I18n.t('updateSuccess') }
+          </Alert>
+          <Alert variant="danger" show={updateFailure}>
+            { I18n.t('updateFailure') }
           </Alert>
 
         </Form>

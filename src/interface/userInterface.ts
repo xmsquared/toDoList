@@ -10,8 +10,20 @@ export interface Login{
     password: string
 }
 
-
-export interface User_context{
+export interface userContext{
     token: string,
-    setToken: (e: any) => void,
+    setToken: (e: string) => void,
+}
+
+export const DefaultUser: User = {
+    name: '',
+    email: '',
+    password: '',
+    age: 0
+}
+
+
+export const DefaultLogin: Login = {
+    email: '',
+    password: ''
 }
