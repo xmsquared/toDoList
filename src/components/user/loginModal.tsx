@@ -6,7 +6,8 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
+
+import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 
 import { Login , DefaultLogin} from '../../interface/';
 import { loginUserByEmail , redirectToHome } from '../../utils/';
@@ -60,22 +61,11 @@ export const LoginModal: React.FC = () => {
     setDetail(DefaultLogin);
   }
 
-  var loadingString = I18n.t('loading');
-
   const LoadingSpinner = useMemo(() => {
     return (
-      <Button block variant="dark" disabled>
-      <Spinner
-        as="span"
-        animation="grow"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-       {I18n.t('loading')}
-      </Button>
+      <LoadingSpinnerButton />
     )
-  }, [loadingString])
+  }, [])
 
   return(
       <Container fluid>

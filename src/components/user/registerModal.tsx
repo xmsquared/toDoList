@@ -6,8 +6,8 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
+import { LoadingSpinnerButton } from '../../components/spinner/loadingSpinner';
 import { User , DefaultUser } from '../../interface/userInterface';
 import { registerUser, checkPass } from '../../utils/';
 import { useTokenContext } from '../../context';
@@ -104,16 +104,7 @@ export const RegisterModal: React.FC = () =>{
           
           <Row>
             {registerLoading? (
-              <Button block variant="dark" disabled>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-                Loading...
-              </Button>
+              <LoadingSpinnerButton />
             ):(
               <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
             )}

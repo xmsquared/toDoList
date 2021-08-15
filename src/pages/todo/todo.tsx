@@ -3,9 +3,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
-import Spinner from 'react-bootstrap/Spinner';
 import "react-datepicker/dist/react-datepicker.css";
 
+import { LoadingSpinnerButton } from "../../components/spinner/loadingSpinner";
 import { TodoForm } from "../../components/todoForm/";
 import { DefaultInfo} from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
@@ -225,16 +225,7 @@ const Todo: React.FC = () =>{
 
                 <Col xs="auto">
                     {addNewLoading ? (
-                        <Button style={{marginBottom: "2rem"}} disabled>
-                        <Spinner
-                            as="span"
-                            animation="grow"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        />
-                            Loading...
-                        </Button>
+                        <LoadingSpinnerButton />
                     ):(
                         <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
                             {I18n.t('addNew')}
@@ -242,16 +233,7 @@ const Todo: React.FC = () =>{
                     )}
                     {' '}
                     {deleteLoading? (
-                        <Button variant="danger" disabled style={{marginBottom: "2rem"}}>
-                        <Spinner
-                            as="span"
-                            animation="grow"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        />
-                            Loading...
-                        </Button>
+                        <LoadingSpinnerButton />
                     ):(
                         <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
                             {I18n.t('delete')}

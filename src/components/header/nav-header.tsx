@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Translate } from 'react-redux-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

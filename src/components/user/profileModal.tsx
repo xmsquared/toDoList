@@ -6,8 +6,8 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
+import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 import { User , DefaultUser} from '../../interface/userInterface';
 import { updateProfile, getUserDetailByToken } from '../../utils';
 import { useTokenContext } from '../../context';
@@ -93,16 +93,7 @@ export const ProfileModal: React.FC = () =>{
           
           <Row>
             {updateLoading?(
-              <Button block variant="dark" disabled>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-                { I18n.t('loading') }
-              </Button>
+              <LoadingSpinnerButton />
               
             ):(
               <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
