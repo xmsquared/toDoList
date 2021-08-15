@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Alert from "react-bootstrap/Alert";
+import React, { useState, useCallback } from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -9,8 +8,9 @@ import Row from 'react-bootstrap/Row';
 
 import { LoadingSpinnerButton } from '../../components/spinner/loadingSpinner';
 import { User , DefaultUser } from '../../interface/userInterface';
-import { registerUser, checkPass } from '../../utils/';
+import { registerUser, checkPass, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from '../../context';
+import { AlertMessage } from "../toastNote/alertMessage";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -22,20 +22,6 @@ export const RegisterModal: React.FC = () =>{
   const [passwordLength, setPasswordLength] = useState(false);
   const [regitsterSuccess, setRegisterSuccess] = useState(false);
   const [regitsterFailure, setRegitsterFailure] = useState(false);
-
-  useEffect(() => {
-    if(passwordLength){
-      window.setTimeout(()=>{setPasswordLength(false)},3000);
-    }
-
-    if(regitsterSuccess){
-      window.setTimeout(()=>{setRegisterSuccess(false)},3000);
-    }
-
-    if(regitsterFailure){
-      window.setTimeout(()=>{setRegitsterFailure(false)},3000);
-    }
-  }, [passwordLength, regitsterSuccess, regitsterFailure])
 
   const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
@@ -56,7 +42,7 @@ export const RegisterModal: React.FC = () =>{
         if(res.status){
           setRegisterSuccess(true);
           setRegisterLoading(false);
-          localStorage.setItem('token', JSON.stringify(res.token));
+          saveTokenToLocal(JSON.stringify(res.token));
           setToken(res.token);
         } else {
           setRegitsterFailure(true);
@@ -92,9 +78,8 @@ export const RegisterModal: React.FC = () =>{
             <InputGroup>
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
-            <Alert variant="danger" show={passwordLength}>
-              { I18n.t('passwordLength') }
-            </Alert>
+
+            <AlertMessage message={ I18n.t('passwordLength') } show={passwordLength} styleVariant={"danger"} setTriggerFalse={setPasswordLength}/>
           </Form.Group>
 
           <Form.Group controlId="registAge">
@@ -111,14 +96,9 @@ export const RegisterModal: React.FC = () =>{
 
           </Row>
 
-          <Alert variant="danger" show={regitsterFailure}>
-            { I18n.t('registerFailure') }
-          </Alert>
-
+          <AlertMessage message={ I18n.t('registerFailure') } show={regitsterFailure} styleVariant={"danger"} setTriggerFalse={setRegitsterFailure}/>
           
-          <Alert variant="success" show={regitsterSuccess}>
-            { I18n.t('registerSuccess') }
-          </Alert>
+          <AlertMessage message={ I18n.t('registerSuccess') } show={regitsterSuccess} styleVariant={"success"} setTriggerFalse={setRegisterSuccess}/>
 
         </Form>
       </Col>

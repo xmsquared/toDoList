@@ -2,8 +2,9 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
 import DatePicker from "react-datepicker";
+
+import { AlertMessage } from '../toastNote/alertMessage';
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -17,6 +18,7 @@ interface IProps{
     category: string,
     content: string,
     deadline: Date,
+    setValidShow: (e: any)=>void,
 }
 
 export const TodoForm: React.FC<IProps> = ({
@@ -27,7 +29,8 @@ export const TodoForm: React.FC<IProps> = ({
     description,
     category,
     content,
-    deadline
+    deadline,
+    setValidShow
 }) => {
 
     return(
@@ -38,9 +41,7 @@ export const TodoForm: React.FC<IProps> = ({
                     <Form.Control type="description" name="description" value={description} onChange={handleInfoChange} />
                 </Col>
             </Form.Group>
-            <Alert variant="danger" show={validShow}>
-                {I18n.t('alertValid')}
-            </Alert>
+            <AlertMessage message={I18n.t('alertValid')} show={validShow} styleVariant={"danger"} setTriggerFalse={setValidShow} />
             <Form.Group  as={Row} controlId="Category">
                 <Form.Label column sm="3">{I18n.t('category')}</Form.Label>
                 <Col sm="5">

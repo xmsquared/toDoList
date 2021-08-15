@@ -1,5 +1,4 @@
 import React, { useState, useEffect}  from "react";
-import Alert from "react-bootstrap/Alert";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -11,6 +10,7 @@ import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 import { User , DefaultUser} from '../../interface/userInterface';
 import { updateProfile, getUserDetailByToken } from '../../utils';
 import { useTokenContext } from '../../context';
+import { AlertMessage } from "../toastNote/alertMessage";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -28,16 +28,6 @@ export const ProfileModal: React.FC = () =>{
       setUserInfo({name: res.name, age: res.age, email: res.email, password: ''})
     })
   }, [token]);
-
-  useEffect(()=>{
-    if(updateSuccess){
-      window.setTimeout(()=>{setUpdateSuccess(false)},3000);
-    }
-
-    if(updateFailure){
-      window.setTimeout(()=>{setUpdateFailure(false)},3000);
-    }
-  }, [updateSuccess, updateFailure])
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -100,12 +90,8 @@ export const ProfileModal: React.FC = () =>{
             )}
           
           </Row>
-          <Alert variant="success" show={updateSuccess}>
-            { I18n.t('updateSuccess') }
-          </Alert>
-          <Alert variant="danger" show={updateFailure}>
-            { I18n.t('updateFailure') }
-          </Alert>
+          <AlertMessage message={ I18n.t('updateSuccess') } show={updateSuccess} styleVariant={"success"} setTriggerFalse={setUpdateSuccess} />
+          <AlertMessage message={ I18n.t('updateFailure') } show={updateFailure} styleVariant={"danger"} setTriggerFalse={setUpdateFailure} />
 
         </Form>
       </Col>

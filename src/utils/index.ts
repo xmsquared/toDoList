@@ -13,4 +13,12 @@ export const  dateToNum = (d) => {
 
 export const checkPass = (password: string) => {
     return password.length > 7;
-  }
+}
+
+export const saveTokenToLocal = (token: string) => {
+    localStorage.setItem('token', token);
+}
+
+export const removeTokenFromLocal = () => {
+    localStorage.removeItem("token");
+}

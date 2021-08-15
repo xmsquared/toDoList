@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -10,8 +9,9 @@ import Row from 'react-bootstrap/Row';
 import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 
 import { Login , DefaultLogin} from '../../interface/';
-import { loginUserByEmail , redirectToHome } from '../../utils/';
+import { loginUserByEmail , redirectToHome, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from "../../context";
+import { AlertMessage } from "../toastNote/alertMessage";
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
@@ -32,13 +32,10 @@ export const LoginModal: React.FC = () => {
 
 
   useEffect(()=>{
-    if(alertDetail){
-      window.setTimeout(()=>{setAlertDetail(false)},3000);
-    }
     if(loggedIn){
       redirectToHome();
     }
-  }, [loggedIn, alertDetail])
+  }, [loggedIn])
 
   const login = (e) => {
     e.preventDefault();
@@ -49,7 +46,7 @@ export const LoginModal: React.FC = () => {
     .then(res => {
       if(res.status){
         setToken(res.token);
-        localStorage.setItem('token', JSON.stringify(res.token));
+        saveTokenToLocal(JSON.stringify(res.token));
         setLoginLoading(false);
         setLoggedIn(true);
       }else{
@@ -72,9 +69,7 @@ export const LoginModal: React.FC = () => {
       <Col>
         <Form onSubmit={login}>
           <h4>{ I18n.t('login') }</h4>
-          <Alert variant="danger" show={alertDetail}>
-            Detail Entered doesn't match
-          </Alert>
+          <AlertMessage message={"Detail Entered doesn't match"} show={alertDetail} styleVariant={"danger"} setTriggerFalse={setAlertDetail}/>
           
           <Form.Group controlId="loginEmail">
             <Form.Label>{ I18n.t('email') }</Form.Label>

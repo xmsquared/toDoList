@@ -2,10 +2,10 @@ import { useState , useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { LoadingSpinnerButton } from "../../components/spinner/loadingSpinner";
+import { AlertMessage } from "../../components/toastNote/alertMessage";
 import { TodoForm } from "../../components/todoForm/";
 import { DefaultInfo} from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
@@ -204,9 +204,8 @@ const Todo: React.FC = () =>{
 
     return(
         <div style={{marginTop: '2rem'}}>
-            <Alert variant="success" show={noteShow}>
-                {note}
-            </Alert>
+            <AlertMessage message={note} show={noteShow} styleVariant={"success"} setTriggerFalse={setNoteShow}/>
+
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">
                     {todoShow &&
@@ -219,6 +218,7 @@ const Todo: React.FC = () =>{
                             category = {info.category} 
                             content = {info.content}
                             deadline = {info.deadline}
+                            setValidShow = {setValidShow}
                         />
                     }
                 </Col>

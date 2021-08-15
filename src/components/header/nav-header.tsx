@@ -6,7 +6,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { loggout , redirectToHome } from '../../utils/';
+import { loggout , redirectToHome, removeTokenFromLocal } from '../../utils/';
 import { useTokenContext } from '../../context';
 
 declare function require(name:string);
@@ -44,7 +44,7 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
             loggout(token)
             .then(res => {
                 if(res){
-                    localStorage.removeItem("token");
+                    removeTokenFromLocal();
                     setLogin(false);
                     redirectToHome();
                 }
