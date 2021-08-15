@@ -76,7 +76,7 @@ export const ProfileModal: React.FC = () =>{
 
           </Form.Group>
 
-          <Form.Group controlId="formBasicUserAge">
+          <Form.Group controlId="ProfileAge">
             <Form.Label>{ I18n.t('age') }</Form.Label>
             <Form.Control placeholder="Enter age" type="number" value={userInfo.age} name="age" onChange={onChangeInfo}/>
           </Form.Group>
