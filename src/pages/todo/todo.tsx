@@ -132,15 +132,6 @@ const Todo: React.FC = () =>{
         }
     }
 
-    useEffect(() => {
-        if(noteShow){
-            window.setTimeout(()=>{setNoteShow(false)},2000)
-        }
-        if(validShow){
-            window.setTimeout(()=>{setValidShow(false)},2000)
-        }
-    }, [noteShow, validShow])
-
     const handleDelete = (id) =>{
         return deleteTask(token, id)
         .then(res => {
