@@ -1,34 +1,46 @@
-import { useEffect, useState } from "react";
-import Alert from "react-bootstrap/Alert";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { DefaultNote, NoteDetail, NoteType } from '../../interface';
 
 interface AlertMessageProps {
-    message: string,
     show: boolean,
-    styleVariant: string,
-    setTriggerFalse: (e: any)=>void,
+    setTriggerFalse: (e: boolean)=>void,
+    noteDetail: NoteDetail,
 }
 
 export const AlertMessage: React.FC<AlertMessageProps> = ({
-    message,
     show,
-    styleVariant,
-    setTriggerFalse
+    setTriggerFalse,
+    noteDetail
 }) => {
-    const [alertShow, setAlertShow] = useState(false);
-
-    if (show && !alertShow) {
-        setAlertShow(true);
+    console.log(show);
+    if (show || noteDetail !== DefaultNote) {
+        switch(noteDetail.type){
+            case NoteType.success:
+                toast.success(noteDetail.message);
+                break;
+            case NoteType.failure:
+                toast.error(noteDetail.message);
+                break;
+            case NoteType.information:
+                toast.info(noteDetail.message);
+                break;
+        }
+        window.setTimeout(() => { setTriggerFalse(false) }, 3000)
     }
 
-    useEffect(() => {
-        if (alertShow) {
-            window.setTimeout(() => { setAlertShow(false); setTriggerFalse(false) }, 3000)
-        }
-    }, [alertShow, setTriggerFalse])
-
     return(
-        <Alert variant={styleVariant} show={alertShow}>
-            {message}
-        </Alert>
+        <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover={false}
+        />
     )
 }

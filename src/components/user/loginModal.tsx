@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 
 import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 
-import { Login , DefaultLogin} from '../../interface/';
+import { Login , DefaultLogin, NoteType } from '../../interface/';
 import { loginUserByEmail , redirectToHome, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from "../../context";
 import { AlertMessage } from "../toastNote/alertMessage";
@@ -18,6 +18,7 @@ var I18n = require('react-redux-i18n').I18n;
 export const LoginModal: React.FC = () => {
   const {setToken} = useTokenContext();
   const [detail, setDetail] = useState<Login>(DefaultLogin);
+  const [note, setNote] = useState({message: "Detail Entered doesn't match", type: NoteType.failure});
   const [alertDetail, setAlertDetail] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -69,7 +70,7 @@ export const LoginModal: React.FC = () => {
       <Col>
         <Form onSubmit={login}>
           <h4>{ I18n.t('login') }</h4>
-          <AlertMessage message={"Detail Entered doesn't match"} show={alertDetail} styleVariant={"danger"} setTriggerFalse={setAlertDetail}/>
+          <AlertMessage show={alertDetail} setTriggerFalse={setAlertDetail} noteDetail={note}/>
           
           <Form.Group controlId="loginEmail">
             <Form.Label>{ I18n.t('email') }</Form.Label>

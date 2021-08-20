@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { LoadingSpinnerButton } from "../../components/spinner/loadingSpinner";
 import { AlertMessage } from "../../components/toastNote/alertMessage";
 import { TodoForm } from "../../components/todoForm/";
-import { DefaultInfo} from "../../interface/";
+import { DefaultInfo, DefaultNote, NoteType } from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
 import { addTask, getAllTask, deleteTask, redirectToHome, dateToNum } from '../../utils/';
 import { useTokenContext } from '../../context/';
@@ -18,12 +18,12 @@ var I18n = require('react-redux-i18n').I18n;
 const Todo: React.FC = () =>{
     const {token} = useTokenContext();
     const [info, setInfo] = useState(DefaultInfo);
+    const [note, setNote] = useState(DefaultNote);
     const [selectData, setSelectData] = useState([]) as any;
     const [data, setData] = useState([]) as any;
 
     const [noteShow, setNoteShow] = useState(false);
     const [validShow, setValidShow] = useState(false);
-    const [note, setNote] = useState("add/delete success");
     const [todoShow, setToDoShow] = useState(false);
     const [addNewLoading, setAddNewLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -37,6 +37,13 @@ const Todo: React.FC = () =>{
         })
 
     }, [token])
+
+    const createNote = (message: string, type: NoteType) => {
+        setNote({
+            message: message,
+            type: type
+        })
+    } 
 
     const sortByDeadLine = () => {
         var tempData = [...data];
@@ -119,11 +126,11 @@ const Todo: React.FC = () =>{
                     setData([...tempResult]);
                     setInfo(DefaultInfo);
                     setToDoShow(false);
-                    setNote(I18n.t('alertAdd'));
+                    createNote(I18n.t('alertAdd'), NoteType.success);
                     setNoteShow(true);
                     setAddNewLoading(false);
                 } else {
-                    setNote("add new task failed, please tried again later!");
+                    createNote("add new task failed, please tried again later!", NoteType.failure);
                     setNoteShow(true);
                     setAddNewLoading(false);
                 }
@@ -155,11 +162,11 @@ const Todo: React.FC = () =>{
             });
             setData(tempResult);
             setDeleteLoading(false);
-            setNote(I18n.t('alertRemove'));
+            createNote(I18n.t('alertRemove'), NoteType.success);
             setNoteShow(true);
         }else{
             setDeleteLoading(false);
-            setNote('delete unsuccessful, please re-try it agian!');
+            createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
             setNoteShow(true);
         }
         
@@ -174,7 +181,7 @@ const Todo: React.FC = () =>{
                 var deleteId = selectData[i];
                 if(!handleDelete(deleteId)){
                     setDeleteLoading(false);
-                    setNote('delete unsuccessful, please re-try it agian!');
+                    createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
                     setNoteShow(true);
                     redirectToHome();
                     break;
@@ -188,7 +195,7 @@ const Todo: React.FC = () =>{
             setSelectData([]);
             setData(tempResult);
             setDeleteLoading(false);
-            setNote(I18n.t('alertRemove'));
+            createNote(I18n.t('alertRemove'), NoteType.success);
             setNoteShow(true);
         }
     }
@@ -199,7 +206,7 @@ const Todo: React.FC = () =>{
 
     return(
         <div style={{marginTop: '2rem'}}>
-            <AlertMessage message={note} show={noteShow} styleVariant={"success"} setTriggerFalse={setNoteShow}/>
+            <AlertMessage show={noteShow} setTriggerFalse={setNoteShow} noteDetail={note}/>
 
             <Row style={{paddingLeft: '10%'}}>
                 <Col xs="5">

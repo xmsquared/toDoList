@@ -7,10 +7,10 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
 import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
-import { User , DefaultUser} from '../../interface/userInterface';
 import { updateProfile, getUserDetailByToken } from '../../utils';
 import { useTokenContext } from '../../context';
 import { AlertMessage } from "../toastNote/alertMessage";
+import { User , DefaultUser, DefaultNote, NoteType } from "../../interface";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -18,9 +18,9 @@ var I18n = require('react-redux-i18n').I18n;
 export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
   const [userInfo, setUserInfo] = useState<User>(DefaultUser);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [updateFailure, setUpdateFailure] = useState(false);
+  const [updateAlert, setUpdateAlert] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [note, setNote] = useState(DefaultNote);
   
   useEffect(()=>{
     getUserDetailByToken(token)
@@ -28,6 +28,13 @@ export const ProfileModal: React.FC = () =>{
       setUserInfo({name: res.name, age: res.age, email: res.email, password: ''})
     })
   }, [token]);
+
+  const createNote = (message: string, type: NoteType) => {
+    setNote({
+        message: message,
+        type: type
+    })
+} 
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -43,10 +50,12 @@ export const ProfileModal: React.FC = () =>{
     updateProfile(userInfo, token)
     .then(res => {
       if (res){
-        setUpdateSuccess(true);
+        setUpdateAlert(true);
+        createNote(I18n.t('updateSuccess') , NoteType.success);
         setUpdateLoading(false);
       }else{
-        setUpdateFailure(true);
+        setUpdateAlert(true);
+        createNote(I18n.t('updateFailure') , NoteType.failure);
         setUpdateLoading(false);
       }
     });
@@ -90,8 +99,7 @@ export const ProfileModal: React.FC = () =>{
             )}
           
           </Row>
-          <AlertMessage message={ I18n.t('updateSuccess') } show={updateSuccess} styleVariant={"success"} setTriggerFalse={setUpdateSuccess} />
-          <AlertMessage message={ I18n.t('updateFailure') } show={updateFailure} styleVariant={"danger"} setTriggerFalse={setUpdateFailure} />
+          <AlertMessage show={updateAlert} setTriggerFalse={setUpdateAlert} noteDetail={note}/>
 
         </Form>
       </Col>

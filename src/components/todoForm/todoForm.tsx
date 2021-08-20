@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import { AlertMessage } from '../toastNote/alertMessage';
 import { useState } from "react";
 import { FormExitConfirm } from './';
+import { NoteType } from "../../interface/";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -42,6 +43,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({
     clearInput
 }) => {
     const [showConfirm, setShowConfirm] = useState(false);
+    const [note, setNote] = useState({message: I18n.t('alertValid'), type: NoteType.failure});
     
     const handleClose = () => {
         const today = new Date();
@@ -83,7 +85,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({
                     </Col>
                 </Form.Group>
 
-                <AlertMessage message={I18n.t('alertValid')} show={validShow} styleVariant={"danger"} setTriggerFalse={setValidShow} />
+                <AlertMessage show={validShow} setTriggerFalse={setValidShow} noteDetail={note}/>
 
                 <Form.Group  as={Row} controlId="Category">
                     <Form.Label column sm="3">{I18n.t('category')}</Form.Label>

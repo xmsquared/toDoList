@@ -7,7 +7,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 
 import { LoadingSpinnerButton } from '../../components/spinner/loadingSpinner';
-import { User , DefaultUser } from '../../interface/userInterface';
+import { User , DefaultUser,  DefaultNote, NoteType } from '../../interface/';
 import { registerUser, checkPass, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from '../../context';
 import { AlertMessage } from "../toastNote/alertMessage";
@@ -19,9 +19,9 @@ export const RegisterModal: React.FC = () =>{
   const {setToken} = useTokenContext();
   const [tempuser, setTempUser] = useState<User>(DefaultUser);
   const [registerLoading, setRegisterLoading] = useState(false);
-  const [passwordLength, setPasswordLength] = useState(false);
-  const [regitsterSuccess, setRegisterSuccess] = useState(false);
-  const [regitsterFailure, setRegitsterFailure] = useState(false);
+
+  const [note, setNote] = useState(DefaultNote);
+  const [alertShow, setAlertShow] = useState(false);
 
   const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
@@ -30,6 +30,14 @@ export const RegisterModal: React.FC = () =>{
         [name]: value
     }))
   }, [])
+
+  
+  const createNote = (message: string, type: NoteType) => {
+    setNote({
+        message: message,
+        type: type
+    })
+  } 
 
   const register = (e) => {
     e.preventDefault();
@@ -40,25 +48,29 @@ export const RegisterModal: React.FC = () =>{
       registerUser(tempuser)
       .then(res => {
         if(res.status){
-          setRegisterSuccess(true);
+          createNote( I18n.t('registerSuccess') , NoteType.success);
+          setAlertShow(true);
           setRegisterLoading(false);
           saveTokenToLocal(JSON.stringify(res.token));
           setToken(res.token);
         } else {
-          setRegitsterFailure(true);
+          createNote( I18n.t('registerFailure') , NoteType.failure);
+          setAlertShow(true);
           setRegisterLoading(false);
         }
   
       })
       .catch(res => console.log(res));
     }else{
-      setPasswordLength(true);
+      createNote(I18n.t('passwordLength'), NoteType.failure);
+      setAlertShow(true);
       setRegisterLoading(false);
     }
   }
 
   return(
       <Container fluid>
+        <AlertMessage show={alertShow} setTriggerFalse={setAlertShow} noteDetail={note}/>
       <Col>
         <Form onSubmit={register}>
           <h4>{ I18n.t('registerUser') }</h4>
@@ -79,7 +91,6 @@ export const RegisterModal: React.FC = () =>{
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
 
-            <AlertMessage message={ I18n.t('passwordLength') } show={passwordLength} styleVariant={"danger"} setTriggerFalse={setPasswordLength}/>
           </Form.Group>
 
           <Form.Group controlId="registAge">
@@ -95,10 +106,6 @@ export const RegisterModal: React.FC = () =>{
             )}
 
           </Row>
-
-          <AlertMessage message={ I18n.t('registerFailure') } show={regitsterFailure} styleVariant={"danger"} setTriggerFalse={setRegitsterFailure}/>
-          
-          <AlertMessage message={ I18n.t('registerSuccess') } show={regitsterSuccess} styleVariant={"success"} setTriggerFalse={setRegisterSuccess}/>
 
         </Form>
       </Col>
