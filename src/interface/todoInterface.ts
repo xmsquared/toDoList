@@ -13,7 +13,7 @@ export interface ResData{
 
 export const DefaultInfo: InfoObj = {
     description: '',
-    category: '',
+    category: 'css',
     content: '',
     deadline: new Date(),
     id: ''

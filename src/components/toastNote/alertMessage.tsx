@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import Alert from "react-bootstrap/Alert";
 
-interface IProps {
+interface AlertMessageProps {
     message: string,
     show: boolean,
     styleVariant: string,
     setTriggerFalse: (e: any)=>void,
 }
 
-export const AlertMessage: React.FC<IProps> = ({
+export const AlertMessage: React.FC<AlertMessageProps> = ({
     message,
     show,
     styleVariant,

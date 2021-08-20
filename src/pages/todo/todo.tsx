@@ -193,6 +193,10 @@ const Todo: React.FC = () =>{
         }
     }
 
+    const clearInput = () => {
+        setInfo(DefaultInfo);
+    }
+
     return(
         <div style={{marginTop: '2rem'}}>
             <AlertMessage message={note} show={noteShow} styleVariant={"success"} setTriggerFalse={setNoteShow}/>
@@ -210,6 +214,9 @@ const Todo: React.FC = () =>{
                             content = {info.content}
                             deadline = {info.deadline}
                             setValidShow = {setValidShow}
+                            todoShow = {todoShow}
+                            setTodoShow = {setToDoShow}
+                            clearInput = {clearInput}
                         />
                     }
                 </Col>

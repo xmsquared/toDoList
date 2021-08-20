@@ -14,7 +14,7 @@ var I18n = require('react-redux-i18n').I18n;
 
 library.add(faUser)
 
-interface IProps{
+interface NavHeaderProps{
     switchLocale: (code: string) => void
 }
 
@@ -29,7 +29,7 @@ const languages = [
     },
 ]
 
-const NavHeader: React.FC<IProps> = ({switchLocale}) => {
+const NavHeader: React.FC<NavHeaderProps> = ({switchLocale}) => {
     const [login, setLogin] = useState(false);
     const {token} = useTokenContext();
 

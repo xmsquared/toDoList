@@ -4,7 +4,7 @@ import { InfoObj } from "../../interface/todoInterface";
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
-interface IProps{
+interface TodoTableProps{
     selectAll: (e: any)=>void,
     selectOne: (e: any, id: any)=>void,
     sortByDeadLine: ()=>void,
@@ -13,7 +13,7 @@ interface IProps{
     deleteOne: (id: any)=>void
 }
 
-export const TodoTable: React.FC<IProps> = ({
+export const TodoTable: React.FC<TodoTableProps> = ({
     selectAll,
     selectOne,
     sortByDeadLine,
