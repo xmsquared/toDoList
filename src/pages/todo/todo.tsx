@@ -212,15 +212,14 @@ const Todo: React.FC = () =>{
                     {addNewLoading ? (
                         <LoadingSpinnerButton />
                     ):(
-                        <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
+                        <Button block onClick={e=>setToDoShow(!todoShow)}>
                             {I18n.t('addNew')}
                         </Button>
                     )}
-                    {' '}
                     {deleteLoading? (
                         <LoadingSpinnerButton />
                     ):(
-                        <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
+                        <Button block variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
                             {I18n.t('delete')}
                         </Button> 
                     )}

@@ -29,7 +29,8 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
                     toast.info(noteDetail.message);
                     break;
             }
-            window.setTimeout(() => { setTriggerFalse(false) }, 3000)
+            setTriggerFalse(false);
+            // window.setTimeout(() => { setTriggerFalse(false) }, 3000)
         }
     }, [noteDetail, setTriggerFalse, show])
 
