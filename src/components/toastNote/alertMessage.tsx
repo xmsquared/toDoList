@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -14,21 +15,24 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
     setTriggerFalse,
     noteDetail
 }) => {
-    console.log(show);
-    if (show || noteDetail !== DefaultNote) {
-        switch(noteDetail.type){
-            case NoteType.success:
-                toast.success(noteDetail.message);
-                break;
-            case NoteType.failure:
-                toast.error(noteDetail.message);
-                break;
-            case NoteType.information:
-                toast.info(noteDetail.message);
-                break;
+    
+    useEffect(() => {
+        if (show && noteDetail !== DefaultNote) {
+            switch(noteDetail.type){
+                case NoteType.success:
+                    toast.success(noteDetail.message);
+                    break;
+                case NoteType.failure:
+                    toast.error(noteDetail.message);
+                    break;
+                case NoteType.information:
+                    toast.info(noteDetail.message);
+                    break;
+            }
+            window.setTimeout(() => { setTriggerFalse(false) }, 3000)
         }
-        window.setTimeout(() => { setTriggerFalse(false) }, 3000)
-    }
+    }, [noteDetail, setTriggerFalse, show])
+
 
     return(
         <ToastContainer

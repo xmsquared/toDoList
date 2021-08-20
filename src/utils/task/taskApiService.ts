@@ -9,7 +9,6 @@ export function addTask(token: string, detail: string): any{
     }
     return axios.post(addTask_url, payLoad, config)
             .then(res => {
-                console.log(res.data)
                 return {
                     status: res.data.success,
                     id: res.data.data._id

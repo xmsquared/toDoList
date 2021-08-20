@@ -114,23 +114,20 @@ export const TodoForm: React.FC<TodoFormProps> = ({
                     </Col>
                     
                 </Form.Group>
+
+                <div style = {{ width: '100%' }}>
+                    <Button variant="primary" type="submit">
+                        {I18n.t('submit')}
+                    </Button>
+
+                    <Button variant="secondary" style = {{ position: 'absolute' , right: '15px'}} onClick={handleClose}>
+                        Close
+                    </Button>
+                </div>
+                
             </Form>
 
-            <div style = {{ width: '100%' }}>
-                <Button variant="primary" type="submit">
-                    {I18n.t('submit')}
-                </Button>
-
-                <Button variant="secondary" style = {{ position: 'absolute' , right: '15px'}} onClick={handleClose}>
-                    Close
-                </Button>
-            </div>
         </Modal.Body>
-
-        <Modal.Footer>
-
-
-        </Modal.Footer>
     </Modal>
         
     )

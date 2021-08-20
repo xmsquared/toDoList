@@ -206,27 +206,7 @@ const Todo: React.FC = () =>{
 
     return(
         <div style={{marginTop: '2rem'}}>
-            <AlertMessage show={noteShow} setTriggerFalse={setNoteShow} noteDetail={note}/>
-
             <Row style={{paddingLeft: '10%'}}>
-                <Col xs="5">
-                    {todoShow &&
-                        <TodoForm  
-                            handleInfoChange = {handleInfoChange}
-                            addNew = {addNew}
-                            handleDatePicker = {handleDatePicker}
-                            validShow = {validShow}
-                            description = {info.description}
-                            category = {info.category} 
-                            content = {info.content}
-                            deadline = {info.deadline}
-                            setValidShow = {setValidShow}
-                            todoShow = {todoShow}
-                            setTodoShow = {setToDoShow}
-                            clearInput = {clearInput}
-                        />
-                    }
-                </Col>
 
                 <Col xs="auto">
                     {addNewLoading ? (
@@ -257,6 +237,23 @@ const Todo: React.FC = () =>{
                     }
                 </Col>
             </Row>
+
+            <TodoForm  
+                handleInfoChange = {handleInfoChange}
+                addNew = {addNew}
+                handleDatePicker = {handleDatePicker}
+                validShow = {validShow}
+                description = {info.description}
+                category = {info.category} 
+                content = {info.content}
+                deadline = {info.deadline}
+                setValidShow = {setValidShow}
+                todoShow = {todoShow}
+                setTodoShow = {setToDoShow}
+                clearInput = {clearInput}
+            />
+
+            <AlertMessage show={noteShow} setTriggerFalse={setNoteShow} noteDetail={note}/>
         </div>
     )
 }
