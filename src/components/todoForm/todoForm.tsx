@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
 
+import { MouseEvent } from 'react';
 import { AlertMessage } from '../toastNote/alertMessage';
 import { useState } from "react";
 import { FormExitConfirm } from './';
@@ -15,14 +16,14 @@ var I18n = require('react-redux-i18n').I18n;
 
 interface TodoFormProps{
     handleInfoChange: (e: any)=>void,
-    addNew: (e: any)=>void,
-    handleDatePicker: (e: any)=>void,
+    addNew: (e: any )=>void,
+    handleDatePicker: (e: MouseEvent)=>void,
     validShow: boolean,
     description: string,
     category: string,
     content: string,
     deadline: Date,
-    setValidShow: (e: any)=>void,
+    setValidShow: (e: boolean)=>void,
     todoShow: boolean,
     setTodoShow: (e: boolean)=>void,
     clearInput: ()=>void,

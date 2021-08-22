@@ -34,7 +34,9 @@ const Todo: React.FC = () =>{
             if(res.todoNum > 0) {
                 setData([...res.todoList])
             }
-        })
+        });
+
+
 
     }, [token])
 

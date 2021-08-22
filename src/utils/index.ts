@@ -1,3 +1,5 @@
+import { InfoObj } from '../interface';
+
 export * from './task/taskApiService';
 export * from './user/TodoApiService';
 
@@ -21,4 +23,18 @@ export const saveTokenToLocal = (token: string) => {
 
 export const removeTokenFromLocal = () => {
     localStorage.removeItem("token");
+}
+
+export const calculatorPageNum = (length: number) => {
+   const num = length % 10 === 0 ? Math.floor(length/10) : Math.floor(length/10)+1;
+   return num
+}
+
+export const cutDisplayData = (data: InfoObj[], activeNum: number) => {
+    let leftBoundry = (activeNum - 1) * 10;
+    let rightBoundry = activeNum * 10;
+
+    rightBoundry = rightBoundry > data.length ? data.length : rightBoundry;
+
+    return data.slice(leftBoundry, rightBoundry)
 }
