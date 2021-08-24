@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState , useEffect, useCallback } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -39,13 +39,22 @@ const Todo: React.FC = () =>{
 
 
     }, [token])
+    
+    const createNote = useCallback(
+        (message: string, type: NoteType) => {
+            if (deleteLoading) setDeleteLoading(false);
 
-    const createNote = (message: string, type: NoteType) => {
-        setNote({
-            message: message,
-            type: type
-        })
-    } 
+            if (addNewLoading) setAddNewLoading(false);
+
+            setNote({
+                message: message,
+                type: type
+            });
+
+            setNoteShow(true);
+        } ,
+        [addNewLoading, deleteLoading],
+      )
 
     const sortByDeadLine = () => {
         var tempData = [...data];
@@ -129,12 +138,8 @@ const Todo: React.FC = () =>{
                     setInfo(DefaultInfo);
                     setToDoShow(false);
                     createNote(I18n.t('alertAdd'), NoteType.success);
-                    setNoteShow(true);
-                    setAddNewLoading(false);
                 } else {
                     createNote("add new task failed, please tried again later!", NoteType.failure);
-                    setNoteShow(true);
-                    setAddNewLoading(false);
                 }
             })
 
@@ -163,13 +168,9 @@ const Todo: React.FC = () =>{
                 return item.id !== id
             });
             setData(tempResult);
-            setDeleteLoading(false);
             createNote(I18n.t('alertRemove'), NoteType.success);
-            setNoteShow(true);
         }else{
-            setDeleteLoading(false);
             createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
-            setNoteShow(true);
         }
         
     }
@@ -182,9 +183,7 @@ const Todo: React.FC = () =>{
             while(i--){
                 var deleteId = selectData[i];
                 if(!handleDelete(deleteId)){
-                    setDeleteLoading(false);
                     createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
-                    setNoteShow(true);
                     redirectToHome();
                     break;
                 }
@@ -196,9 +195,7 @@ const Todo: React.FC = () =>{
 
             setSelectData([]);
             setData(tempResult);
-            setDeleteLoading(false);
             createNote(I18n.t('alertRemove'), NoteType.success);
-            setNoteShow(true);
         }
     }
 

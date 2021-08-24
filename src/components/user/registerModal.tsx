@@ -31,13 +31,17 @@ export const RegisterModal: React.FC = () =>{
     }))
   }, [])
 
-  
-  const createNote = (message: string, type: NoteType) => {
-    setNote({
-        message: message,
-        type: type
-    })
-  } 
+  const createNote = useCallback(
+    (message: string, type: NoteType) => {
+      setRegisterLoading(false);
+      setNote({
+          message: message,
+          type: type
+      });
+      setAlertShow(true);
+    } ,
+    [],
+  )
 
   const register = (e) => {
     e.preventDefault();
@@ -49,22 +53,17 @@ export const RegisterModal: React.FC = () =>{
       .then(res => {
         if(res.status){
           createNote( I18n.t('registerSuccess') , NoteType.success);
-          setAlertShow(true);
-          setRegisterLoading(false);
           saveTokenToLocal(JSON.stringify(res.token));
           setToken(res.token);
         } else {
           createNote( I18n.t('registerFailure') , NoteType.failure);
-          setAlertShow(true);
-          setRegisterLoading(false);
         }
   
       })
       .catch(res => console.log(res));
     }else{
       createNote(I18n.t('passwordLength'), NoteType.failure);
-      setAlertShow(true);
-      setRegisterLoading(false);
+
     }
   }
 

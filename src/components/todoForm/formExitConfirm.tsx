@@ -1,5 +1,6 @@
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import { useCallback } from "react";
 
 interface FormExitConfirmProps {
     setTodoShow: (e: boolean)=>void,
@@ -15,11 +16,14 @@ export const FormExitConfirm: React.FC<FormExitConfirmProps> = ({
     clearInput,
 }) => {
     
-    const closeAll = () => {
-        clearInput();
-        setTodoShow(false);
-        setShowConfirm(false);
-    }
+    const closeAll = useCallback(
+        () => {
+            clearInput();
+            setTodoShow(false);
+            setShowConfirm(false);
+        },
+        [clearInput, setShowConfirm, setTodoShow]
+    )
 
     return (
         

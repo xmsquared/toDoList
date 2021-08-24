@@ -1,4 +1,4 @@
-import React, { useState, useEffect}  from "react";
+import React, { useState, useEffect, useCallback}  from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
@@ -29,12 +29,17 @@ export const ProfileModal: React.FC = () =>{
     })
   }, [token]);
 
-  const createNote = (message: string, type: NoteType) => {
-    setNote({
-        message: message,
-        type: type
-    })
-} 
+  const createNote = useCallback(
+    (message: string, type: NoteType) => {
+      setUpdateAlert(true);
+      setUpdateLoading(false);
+      setNote({
+          message: message,
+          type: type
+      })
+    } ,
+    [],
+  )
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -50,13 +55,10 @@ export const ProfileModal: React.FC = () =>{
     updateProfile(userInfo, token)
     .then(res => {
       if (res){
-        setUpdateAlert(true);
         createNote(I18n.t('updateSuccess') , NoteType.success);
-        setUpdateLoading(false);
       }else{
-        setUpdateAlert(true);
         createNote(I18n.t('updateFailure') , NoteType.failure);
-        setUpdateLoading(false);
+        
       }
     });
   }

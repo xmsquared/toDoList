@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DatePicker from "react-datepicker";
 
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import { AlertMessage } from '../toastNote/alertMessage';
 import { useState } from "react";
 import { FormExitConfirm } from './';
@@ -46,17 +46,20 @@ export const TodoForm: React.FC<TodoFormProps> = ({
     const [showConfirm, setShowConfirm] = useState(false);
     const [note, setNote] = useState({message: I18n.t('alertValid'), type: NoteType.failure});
     
-    const handleClose = () => {
-        const today = new Date();
-        
-        if ( description !== '' || category !== 'css' || content !== '' || deadline.toLocaleDateString() !== today.toLocaleDateString()){
-            setShowConfirm(true);
-        } else {
-            setTodoShow(false);
-            clearInput();
-        }
-        
-    }
+    const handleClose = useCallback(
+        () => {
+            const today = new Date();
+            
+            if ( description !== '' || category !== 'css' || content !== '' || deadline.toLocaleDateString() !== today.toLocaleDateString()){
+                setShowConfirm(true);
+            } else {
+                setTodoShow(false);
+                clearInput();
+            }
+            
+        },
+        [category, clearInput, content, deadline, description, setTodoShow]
+    )
 
     return(
         <Modal
