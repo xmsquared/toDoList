@@ -10,6 +10,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@types/react": "^17.0.18",
     "@types/react-redux": "^7.1.18",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
@@ -21,6 +22,7 @@
     "react-redux-i18n": "^1.9.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-toastify": "^7.0.4",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
     "typescript": "^4.3.5",
@@ -35,7 +37,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -73,6 +76,7 @@
     "@storybook/node-logger": "^6.3.3",
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.3.3",
-    "@types/react-router-dom": "^5.1.8"
+    "@types/react-router-dom": "^5.1.8",
+    "cypress": "^8.2.0"
   }
 }

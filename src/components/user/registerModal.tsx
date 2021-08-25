@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Alert from "react-bootstrap/Alert";
+import React, { useState, useCallback } from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
-import { User , DefaultUser } from '../../interface/userInterface';
-import { registerUser, checkPass } from '../../utils/';
+import { LoadingSpinnerButton } from '../../components/spinner/loadingSpinner';
+import { User , DefaultUser,  DefaultNote, NoteType } from '../../interface/';
+import { registerUser, checkPass, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from '../../context';
+import { AlertMessage } from "../toastNote/alertMessage";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -19,23 +19,9 @@ export const RegisterModal: React.FC = () =>{
   const {setToken} = useTokenContext();
   const [tempuser, setTempUser] = useState<User>(DefaultUser);
   const [registerLoading, setRegisterLoading] = useState(false);
-  const [passwordLength, setPasswordLength] = useState(false);
-  const [regitsterSuccess, setRegisterSuccess] = useState(false);
-  const [regitsterFailure, setRegitsterFailure] = useState(false);
 
-  useEffect(() => {
-    if(passwordLength){
-      window.setTimeout(()=>{setPasswordLength(false)},3000);
-    }
-
-    if(regitsterSuccess){
-      window.setTimeout(()=>{setRegisterSuccess(false)},3000);
-    }
-
-    if(regitsterFailure){
-      window.setTimeout(()=>{setRegitsterFailure(false)},3000);
-    }
-  }, [passwordLength, regitsterSuccess, regitsterFailure])
+  const [note, setNote] = useState(DefaultNote);
+  const [alertShow, setAlertShow] = useState(false);
 
   const onChangeInfo = useCallback(e =>{
     const { name, value } = e.target;
@@ -44,6 +30,18 @@ export const RegisterModal: React.FC = () =>{
         [name]: value
     }))
   }, [])
+
+  const createNote = useCallback(
+    (message: string, type: NoteType) => {
+      setRegisterLoading(false);
+      setNote({
+          message: message,
+          type: type
+      });
+      setAlertShow(true);
+    } ,
+    [],
+  )
 
   const register = (e) => {
     e.preventDefault();
@@ -54,25 +52,24 @@ export const RegisterModal: React.FC = () =>{
       registerUser(tempuser)
       .then(res => {
         if(res.status){
-          setRegisterSuccess(true);
-          setRegisterLoading(false);
-          localStorage.setItem('token', JSON.stringify(res.token));
+          createNote( I18n.t('registerSuccess') , NoteType.success);
+          saveTokenToLocal(JSON.stringify(res.token));
           setToken(res.token);
         } else {
-          setRegitsterFailure(true);
-          setRegisterLoading(false);
+          createNote( I18n.t('registerFailure') , NoteType.failure);
         }
   
       })
       .catch(res => console.log(res));
     }else{
-      setPasswordLength(true);
-      setRegisterLoading(false);
+      createNote(I18n.t('passwordLength'), NoteType.failure);
+
     }
   }
 
   return(
       <Container fluid>
+        <AlertMessage show={alertShow} setTriggerFalse={setAlertShow} noteDetail={note}/>
       <Col>
         <Form onSubmit={register}>
           <h4>{ I18n.t('registerUser') }</h4>
@@ -92,9 +89,7 @@ export const RegisterModal: React.FC = () =>{
             <InputGroup>
               <Form.Control type="password" placeholder="password length must longer than 7" name='password' onChange={onChangeInfo} required/>
             </InputGroup>
-            <Alert variant="danger" show={passwordLength}>
-              { I18n.t('passwordLength') }
-            </Alert>
+
           </Form.Group>
 
           <Form.Group controlId="registAge">
@@ -104,30 +99,12 @@ export const RegisterModal: React.FC = () =>{
           
           <Row>
             {registerLoading? (
-              <Button block variant="dark" disabled>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-                Loading...
-              </Button>
+              <LoadingSpinnerButton />
             ):(
               <Button block variant = "dark" type="submit" >{ I18n.t('registerUser') }</Button>
             )}
 
           </Row>
-
-          <Alert variant="danger" show={regitsterFailure}>
-            { I18n.t('registerFailure') }
-          </Alert>
-
-          
-          <Alert variant="success" show={regitsterSuccess}>
-            { I18n.t('registerSuccess') }
-          </Alert>
 
         </Form>
       </Col>

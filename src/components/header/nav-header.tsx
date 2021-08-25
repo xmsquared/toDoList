@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import Navbar  from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { Translate } from 'react-redux-i18n';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { loggout , redirectToHome } from '../../utils/';
+import { loggout , redirectToHome, removeTokenFromLocal } from '../../utils/';
 import { useTokenContext } from '../../context';
 
 declare function require(name:string);
@@ -15,7 +14,7 @@ var I18n = require('react-redux-i18n').I18n;
 
 library.add(faUser)
 
-interface IProps{
+interface NavHeaderProps{
     switchLocale: (code: string) => void
 }
 
@@ -30,7 +29,7 @@ const languages = [
     },
 ]
 
-const NavHeader: React.FC<IProps> = ({switchLocale}) => {
+const NavHeader: React.FC<NavHeaderProps> = ({switchLocale}) => {
     const [login, setLogin] = useState(false);
     const {token} = useTokenContext();
 
@@ -45,7 +44,7 @@ const NavHeader: React.FC<IProps> = ({switchLocale}) => {
             loggout(token)
             .then(res => {
                 if(res){
-                    localStorage.removeItem("token");
+                    removeTokenFromLocal();
                     setLogin(false);
                     redirectToHome();
                 }

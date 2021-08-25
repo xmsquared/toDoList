@@ -1,13 +1,13 @@
-import { useState , useEffect } from "react";
+import { useState , useEffect, useCallback } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
-import Spinner from 'react-bootstrap/Spinner';
 import "react-datepicker/dist/react-datepicker.css";
 
+import { LoadingSpinnerButton } from "../../components/spinner/loadingSpinner";
+import { AlertMessage } from "../../components/toastNote/alertMessage";
 import { TodoForm } from "../../components/todoForm/";
-import { DefaultInfo} from "../../interface/";
+import { DefaultInfo, DefaultNote, NoteType } from "../../interface/";
 import { TodoTable } from "../../components/todoTable/";
 import { addTask, getAllTask, deleteTask, redirectToHome, dateToNum } from '../../utils/';
 import { useTokenContext } from '../../context/';
@@ -18,12 +18,12 @@ var I18n = require('react-redux-i18n').I18n;
 const Todo: React.FC = () =>{
     const {token} = useTokenContext();
     const [info, setInfo] = useState(DefaultInfo);
+    const [note, setNote] = useState(DefaultNote);
     const [selectData, setSelectData] = useState([]) as any;
     const [data, setData] = useState([]) as any;
 
     const [noteShow, setNoteShow] = useState(false);
     const [validShow, setValidShow] = useState(false);
-    const [note, setNote] = useState("add/delete success");
     const [todoShow, setToDoShow] = useState(false);
     const [addNewLoading, setAddNewLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -34,9 +34,27 @@ const Todo: React.FC = () =>{
             if(res.todoNum > 0) {
                 setData([...res.todoList])
             }
-        })
+        });
+
+
 
     }, [token])
+    
+    const createNote = useCallback(
+        (message: string, type: NoteType) => {
+            if (deleteLoading) setDeleteLoading(false);
+
+            if (addNewLoading) setAddNewLoading(false);
+
+            setNote({
+                message: message,
+                type: type
+            });
+
+            setNoteShow(true);
+        } ,
+        [addNewLoading, deleteLoading],
+      )
 
     const sortByDeadLine = () => {
         var tempData = [...data];
@@ -119,27 +137,14 @@ const Todo: React.FC = () =>{
                     setData([...tempResult]);
                     setInfo(DefaultInfo);
                     setToDoShow(false);
-                    setNote(I18n.t('alertAdd'));
-                    setNoteShow(true);
-                    setAddNewLoading(false);
+                    createNote(I18n.t('alertAdd'), NoteType.success);
                 } else {
-                    setNote("add new task failed, please tried again later!");
-                    setNoteShow(true);
-                    setAddNewLoading(false);
+                    createNote("add new task failed, please tried again later!", NoteType.failure);
                 }
             })
 
         }
     }
-
-    useEffect(() => {
-        if(noteShow){
-            window.setTimeout(()=>{setNoteShow(false)},2000)
-        }
-        if(validShow){
-            window.setTimeout(()=>{setValidShow(false)},2000)
-        }
-    }, [noteShow, validShow])
 
     const handleDelete = (id) =>{
         return deleteTask(token, id)
@@ -163,13 +168,9 @@ const Todo: React.FC = () =>{
                 return item.id !== id
             });
             setData(tempResult);
-            setDeleteLoading(false);
-            setNote(I18n.t('alertRemove'));
-            setNoteShow(true);
+            createNote(I18n.t('alertRemove'), NoteType.success);
         }else{
-            setDeleteLoading(false);
-            setNote('delete unsuccessful, please re-try it agian!');
-            setNoteShow(true);
+            createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
         }
         
     }
@@ -182,9 +183,7 @@ const Todo: React.FC = () =>{
             while(i--){
                 var deleteId = selectData[i];
                 if(!handleDelete(deleteId)){
-                    setDeleteLoading(false);
-                    setNote('delete unsuccessful, please re-try it agian!');
-                    setNoteShow(true);
+                    createNote('delete unsuccessful, please re-try it agian!', NoteType.failure);
                     redirectToHome();
                     break;
                 }
@@ -196,64 +195,30 @@ const Todo: React.FC = () =>{
 
             setSelectData([]);
             setData(tempResult);
-            setDeleteLoading(false);
-            setNote(I18n.t('alertRemove'));
-            setNoteShow(true);
+            createNote(I18n.t('alertRemove'), NoteType.success);
         }
+    }
+
+    const clearInput = () => {
+        setInfo(DefaultInfo);
     }
 
     return(
         <div style={{marginTop: '2rem'}}>
-            <Alert variant="success" show={noteShow}>
-                {note}
-            </Alert>
             <Row style={{paddingLeft: '10%'}}>
-                <Col xs="5">
-                    {todoShow &&
-                        <TodoForm  
-                            handleInfoChange = {handleInfoChange}
-                            addNew = {addNew}
-                            handleDatePicker = {handleDatePicker}
-                            validShow = {validShow}
-                            description = {info.description}
-                            category = {info.category} 
-                            content = {info.content}
-                            deadline = {info.deadline}
-                        />
-                    }
-                </Col>
 
                 <Col xs="auto">
                     {addNewLoading ? (
-                        <Button style={{marginBottom: "2rem"}} disabled>
-                        <Spinner
-                            as="span"
-                            animation="grow"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        />
-                            Loading...
-                        </Button>
+                        <LoadingSpinnerButton />
                     ):(
-                        <Button style={{marginBottom: "2rem"}} onClick={e=>setToDoShow(!todoShow)}>
+                        <Button block onClick={e=>setToDoShow(!todoShow)}>
                             {I18n.t('addNew')}
                         </Button>
                     )}
-                    {' '}
                     {deleteLoading? (
-                        <Button variant="danger" disabled style={{marginBottom: "2rem"}}>
-                        <Spinner
-                            as="span"
-                            animation="grow"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        />
-                            Loading...
-                        </Button>
+                        <LoadingSpinnerButton />
                     ):(
-                        <Button variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
+                        <Button block variant="danger" disabled={selectData.length<1} style={{marginBottom: "2rem"}} onClick={e=>deleteSelect(e)}>
                             {I18n.t('delete')}
                         </Button> 
                     )}
@@ -270,6 +235,23 @@ const Todo: React.FC = () =>{
                     }
                 </Col>
             </Row>
+
+            <TodoForm  
+                handleInfoChange = {handleInfoChange}
+                addNew = {addNew}
+                handleDatePicker = {handleDatePicker}
+                validShow = {validShow}
+                description = {info.description}
+                category = {info.category} 
+                content = {info.content}
+                deadline = {info.deadline}
+                setValidShow = {setValidShow}
+                todoShow = {todoShow}
+                setTodoShow = {setToDoShow}
+                clearInput = {clearInput}
+            />
+
+            <AlertMessage show={noteShow} setTriggerFalse={setNoteShow} noteDetail={note}/>
         </div>
     )
 }

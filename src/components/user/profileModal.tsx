@@ -1,16 +1,16 @@
-import React, { useState, useEffect}  from "react";
-import Alert from "react-bootstrap/Alert";
+import React, { useState, useEffect, useCallback}  from "react";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
-import { User , DefaultUser} from '../../interface/userInterface';
+import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
 import { updateProfile, getUserDetailByToken } from '../../utils';
 import { useTokenContext } from '../../context';
+import { AlertMessage } from "../toastNote/alertMessage";
+import { User , DefaultUser, DefaultNote, NoteType } from "../../interface";
 
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
@@ -18,9 +18,9 @@ var I18n = require('react-redux-i18n').I18n;
 export const ProfileModal: React.FC = () =>{
   const {token} = useTokenContext();
   const [userInfo, setUserInfo] = useState<User>(DefaultUser);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [updateFailure, setUpdateFailure] = useState(false);
+  const [updateAlert, setUpdateAlert] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [note, setNote] = useState(DefaultNote);
   
   useEffect(()=>{
     getUserDetailByToken(token)
@@ -29,15 +29,17 @@ export const ProfileModal: React.FC = () =>{
     })
   }, [token]);
 
-  useEffect(()=>{
-    if(updateSuccess){
-      window.setTimeout(()=>{setUpdateSuccess(false)},3000);
-    }
-
-    if(updateFailure){
-      window.setTimeout(()=>{setUpdateFailure(false)},3000);
-    }
-  }, [updateSuccess, updateFailure])
+  const createNote = useCallback(
+    (message: string, type: NoteType) => {
+      setUpdateAlert(true);
+      setUpdateLoading(false);
+      setNote({
+          message: message,
+          type: type
+      })
+    } ,
+    [],
+  )
 
   const onChangeInfo = (e) => {
     const { name, value } = e.target;
@@ -53,11 +55,10 @@ export const ProfileModal: React.FC = () =>{
     updateProfile(userInfo, token)
     .then(res => {
       if (res){
-        setUpdateSuccess(true);
-        setUpdateLoading(false);
+        createNote(I18n.t('updateSuccess') , NoteType.success);
       }else{
-        setUpdateFailure(true);
-        setUpdateLoading(false);
+        createNote(I18n.t('updateFailure') , NoteType.failure);
+        
       }
     });
   }
@@ -86,35 +87,21 @@ export const ProfileModal: React.FC = () =>{
 
           </Form.Group>
 
-          <Form.Group controlId="formBasicUserAge">
+          <Form.Group controlId="ProfileAge">
             <Form.Label>{ I18n.t('age') }</Form.Label>
             <Form.Control placeholder="Enter age" type="number" value={userInfo.age} name="age" onChange={onChangeInfo}/>
           </Form.Group>
           
           <Row>
             {updateLoading?(
-              <Button block variant="dark" disabled>
-              <Spinner
-                as="span"
-                animation="grow"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />
-                { I18n.t('loading') }
-              </Button>
+              <LoadingSpinnerButton />
               
             ):(
               <Button block variant = "dark" type="submit">{ I18n.t('updateInfo') }</Button>
             )}
           
           </Row>
-          <Alert variant="success" show={updateSuccess}>
-            { I18n.t('updateSuccess') }
-          </Alert>
-          <Alert variant="danger" show={updateFailure}>
-            { I18n.t('updateFailure') }
-          </Alert>
+          <AlertMessage show={updateAlert} setTriggerFalse={setUpdateAlert} noteDetail={note}/>
 
         </Form>
       </Col>

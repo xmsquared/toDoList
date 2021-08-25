@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
 
-import { Login , DefaultLogin} from '../../interface/';
-import { loginUserByEmail , redirectToHome } from '../../utils/';
+import { LoadingSpinnerButton } from "../spinner/loadingSpinner";
+
+import { Login , DefaultLogin, NoteType } from '../../interface/';
+import { loginUserByEmail , redirectToHome, saveTokenToLocal } from '../../utils/';
 import { useTokenContext } from "../../context";
+import { AlertMessage } from "../toastNote/alertMessage";
 declare function require(name:string);
 var I18n = require('react-redux-i18n').I18n;
 
 export const LoginModal: React.FC = () => {
   const {setToken} = useTokenContext();
   const [detail, setDetail] = useState<Login>(DefaultLogin);
+  const [note, setNote] = useState({message: "Detail Entered doesn't match", type: NoteType.failure});
   const [alertDetail, setAlertDetail] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -31,13 +33,10 @@ export const LoginModal: React.FC = () => {
 
 
   useEffect(()=>{
-    if(alertDetail){
-      window.setTimeout(()=>{setAlertDetail(false)},3000);
-    }
     if(loggedIn){
       redirectToHome();
     }
-  }, [loggedIn, alertDetail])
+  }, [loggedIn])
 
   const login = (e) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ export const LoginModal: React.FC = () => {
     .then(res => {
       if(res.status){
         setToken(res.token);
-        localStorage.setItem('token', JSON.stringify(res.token));
+        saveTokenToLocal(JSON.stringify(res.token));
         setLoginLoading(false);
         setLoggedIn(true);
       }else{
@@ -60,31 +59,18 @@ export const LoginModal: React.FC = () => {
     setDetail(DefaultLogin);
   }
 
-  var loadingString = I18n.t('loading');
-
   const LoadingSpinner = useMemo(() => {
     return (
-      <Button block variant="dark" disabled>
-      <Spinner
-        as="span"
-        animation="grow"
-        size="sm"
-        role="status"
-        aria-hidden="true"
-      />
-       {I18n.t('loading')}
-      </Button>
+      <LoadingSpinnerButton />
     )
-  }, [loadingString])
+  }, [])
 
   return(
       <Container fluid>
       <Col>
         <Form onSubmit={login}>
           <h4>{ I18n.t('login') }</h4>
-          <Alert variant="danger" show={alertDetail}>
-            Detail Entered doesn't match
-          </Alert>
+          <AlertMessage show={alertDetail} setTriggerFalse={setAlertDetail} noteDetail={note}/>
           
           <Form.Group controlId="loginEmail">
             <Form.Label>{ I18n.t('email') }</Form.Label>
